@@ -1,0 +1,214 @@
+# vi:syntax=groovy
+// Configure the build properties
+properties([
+    buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
+    //disableConcurrentBuilds(),
+    parameters([
+        string(name: 'HYPERV_IMAGE', defaultValue: 'SUSE-CaaS-Platform-3.0-for-MS-HyperV.x86_64-3.0.0-GM', description: 'CaaSP Hyperv Image To Use'),
+        string(name: 'HYPERV_IMAGE_URL', defaultValue: '', description: 'CaaSP Hyperv Image URL'),
+
+        string(name: 'ADMIN_RAM', defaultValue: '8192mb', description: 'Memory of Admin Node'),
+        string(name: 'ADMIN_CPU', defaultValue: '4', description: 'VCPU of Admin Node'),
+
+        string(name: 'MASTER_COUNT', defaultValue: '1', description: 'Number of Master Nodes'),
+        string(name: 'MASTER_RAM', defaultValue: '4096mb', description: 'Memory of Master Nodes'),
+        string(name: 'MASTER_CPU', defaultValue: '2', description: 'VCPU of Master Nodes'),
+
+        string(name: 'WORKER_COUNT', defaultValue: '2', description: 'Number of Worker Nodes'),
+        string(name: 'WORKER_RAM', defaultValue: '2048mb', description: 'Memory of Worker Nodes'),
+        string(name: 'WORKER_CPU', defaultValue: '1', description: 'VCPU of Worker Nodes'),
+
+        booleanParam(name: 'CHOOSE_CRIO', defaultValue: false, description: 'Use crio as container engine ?'),
+        booleanParam(name: 'ENVIRONMENT_DESTROY', defaultValue: false, description: 'Destroy env once done ? if false, manual action is required'),
+        booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')
+
+
+    ])
+])
+
+//TODO remove all zypper steps, pssh, velum-interactions
+//load local methods
+
+def kubicRepo = 'https://github.com/kubic-project/'
+def hvJumpHost = '10.84.149.23'
+def stackName = "${JOB_NAME}-${BUILD_NUMBER}".replace("/", "-")
+def chooseCrio = params.get('CHOOSE_CRIO')
+def BRANCH_NAME = 'master'
+
+
+def image = params.get('HYPERV_IMAGE')
+def imageSourceUrl = params.get('HYPERV_IMAGE_URL')
+def adminRam = params.get('ADMIN_RAM')
+def adminCpu = params.get('ADMIN_CPU').toInteger()
+def masterRam = params.get('MASTER_RAM')
+def masterCpu = params.get('MASTER_CPU').toInteger()
+def masterCount = params.get('MASTER_COUNT').toInteger()
+def workerRam = params.get('WORKER_RAM')
+def workerCpu = params.get('WORKER_CPU').toInteger()
+def workerCount = params.get('WORKER_COUNT').toInteger()
+
+def environmentDestroy = params.get('ENVIRONMENT_DESTROY')
+def workspaceCleanup = params.get('WORKSPACE_CLEANUP')
+
+
+node {
+    stage('Node Info') {
+        echo "Node: ${NODE_NAME}"
+        echo "Workspace: ${WORKSPACE}"
+        sh(script: 'env | sort')
+        sh(script: 'ip a')
+        sh(script: 'ip r')
+        sh(script: 'df -h')
+        sh(script: 'cat /etc/resolv.conf')
+    }
+
+    stage('Preparation') {
+        stage('Set up workspace') {
+            sh(script: "mkdir -p ${WORKSPACE}/logs")
+            sh(script: "mkdir -p ${WORKSPACE}/{automation,salt,velum}")
+            sh(script: "mkdir -p ${WORKSPACE}/{caasp-container-manifests,caasp-services}")
+        }
+
+        stage('Clone git repositories') {
+            timeout(5) {
+                dir("automation") {
+                    checkout([$class: 'GitSCM', branches: [[name: "*/${BRANCH_NAME}"]],
+                    userRemoteConfigs: [[url: (kubicRepo + 'automation.git')]], extensions: [[$class: 'CleanCheckout']]])
+                }
+                dir("salt") {
+                    checkout([$class: 'GitSCM', branches: [[name: "*/${BRANCH_NAME}"]],
+                    userRemoteConfigs: [[url: (kubicRepo + 'salt.git')]], extensions: [[$class: 'CleanCheckout']]])
+                }
+                dir("velum") {
+                    checkout([$class: 'GitSCM', branches: [[name: "*/${BRANCH_NAME}"]],
+                    userRemoteConfigs: [[url: (kubicRepo + 'velum.git')]], extensions: [[$class: 'CleanCheckout']]])
+                }
+                dir("caasp-container-manifests") {
+                    checkout([$class: 'GitSCM', branches: [[name: "*/${BRANCH_NAME}"]],
+                    userRemoteConfigs: [[url: (kubicRepo + 'caasp-container-manifests.git')]], extensions: [[$class: 'CleanCheckout']]])
+                }
+                dir("caasp-services") {
+                    checkout([$class: 'GitSCM', branches: [[name: "*/${BRANCH_NAME}"]],
+                    userRemoteConfigs: [[url: (kubicRepo + 'caasp-services.git')]], extensions: [[$class: 'CleanCheckout']]])
+                }
+            }
+        }
+    }
+
+    stage('Push images') {
+        if (!imageSourceUrl) {
+            echo 'No image source URL provided, skipping task...'
+        } else {
+            timeout(120) {
+                withCredentials([usernamePassword(credentialsId: 'hvcore-ssh', usernameVariable: 'SSHUSER', passwordVariable: 'SSHPASS')]) {
+                    sh(script: "set -o pipefail; sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \"${SSHUSER}\"@${hvJumpHost} 'Get-ChildItem Env:;git checkout ${BRANCH_NAME}; git pull; caasp-hyperv.ps1 fetchimage -caaspImageSourceUrl ${imageSourceUrl} -nochecksum' 2>&1 | tee ${WORKSPACE}/logs/caasp-hyperv.log")
+                }
+            }
+        }
+    }
+
+    stage('Create environment') {
+        timeout(120) {
+            // https://github.com/PowerShell/Win32-OpenSSH/issues/1049 -> Use SSH password
+            withCredentials([usernamePassword(credentialsId: 'hvcore-ssh', usernameVariable: 'SSHUSER', passwordVariable: 'SSHPASS')]) {
+                sh(script: "set -o pipefail; sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \"${SSHUSER}\"@${hvJumpHost} 'Get-ChildItem Env:; git checkout ${BRANCH_NAME}; git pull; caasp-hyperv.ps1 deploy -caaspImage ${image} -stackName ${stackName} -adminRam ${adminRam} -adminCpu ${adminCpu} -masters ${masterCount} -masterRam ${masterRam} -masterCpu ${masterCpu} -workers ${workerCount} -workerRam ${workerRam} -workerCpu ${workerCpu} -Force' 2>&1 | tee ${WORKSPACE}/logs/caasp-hyperv.log")
+            }
+            // Extract state from log file and generate environment.json
+            dir("automation/caasp-hyperv") {
+                sh(script: "sed '/^===/,/^===/!d ; /^===.*/d' ${WORKSPACE}/logs/caasp-hyperv.log > ./caasp-hyperv.hvstate ; jq '.' ./caasp-hyperv.hvstate > /dev/null 2>&1")
+                sh(script: "cp ./caasp-hyperv.hvstate ../../logs")
+                sh(script: "./tools/generate-environment")
+                sh(script: "../misc-tools/generate-ssh-config ./environment.json")
+                sh(script: "cp environment.json ${WORKSPACE}/environment.json")
+                sh(script: "cat ${WORKSPACE}/environment.json")
+            }
+            archiveArtifacts(artifacts: 'environment.json', fingerprint: true)
+        }
+    }
+
+    stage('Configure environment') {
+        timeout(300) {
+            dir('automation/misc-tools') {
+                sh(script: "python3 ./wait-for-velum https://\$(jq '.minions[0].addresses.publicIpv4' -r ${WORKSPACE}/environment.json) --timeout 5")
+            }
+        }
+
+        timeout(90) {
+            dir('automation/velum-bootstrap') {
+                sh(script: './velum-interactions --setup')
+            }
+        }
+
+        timeout(220) {
+            try {
+                dir('automation/velum-bootstrap') {
+                    if (chooseCrio) {
+                        echo "Choosing cri-o"
+                        sh(script: "./velum-interactions --configure --enable-tiller --environment ${WORKSPACE}/environment.json --choose-crio")
+                    } else {
+                        echo "Choosing Docker"
+                        sh(script: "./velum-interactions --configure --enable-tiller --environment ${WORKSPACE}/environment.json")
+                    }
+                }
+
+                parallel 'monitor-logs': {
+                    sh(script: "${WORKSPACE}/automation/misc-tools/parallel-ssh -e ${WORKSPACE}/environment.json -i ${WORKSPACE}/automation/misc-files/id_shared all -- journalctl -f")
+                },
+                'bootstrap': {
+                    try {
+                        dir('automation/velum-bootstrap') {
+                            sh(script: "./velum-interactions --bootstrap --download-kubeconfig --environment ${WORKSPACE}/environment.json")
+                            sh(script: "cp kubeconfig ${WORKSPACE}/kubeconfig")
+                        }
+                    } finally {
+                        sh(script: "${WORKSPACE}/automation/misc-tools/parallel-ssh --stop -e ${WORKSPACE}/environment.json -i ${WORKSPACE}/automation/misc-files/id_shared all -- journalctl -f")
+                    }
+                }
+            } finally {
+                dir('automation/velum-bootstrap') {
+                    junit "velum-bootstrap.xml"
+                    try {
+                        archiveArtifacts(artifacts: "screenshots/**")
+                        archiveArtifacts(artifacts: "kubeconfig")
+                    } catch (Exception exc) {
+                        echo "Failed to Archive Artifacts"
+                    }
+                }
+            }
+        }
+    }
+
+    stage('Run sonobuoy k8s conformance tests') {
+        dir("${WORKSPACE}/automation/k8s-e2e-tests") {
+            try {
+                sh(script: "./e2e-tests --kubeconfig ${WORKSPACE}/kubeconfig")
+            } finally {
+                archiveArtifacts(artifacts: "results/**")
+                junit("results/plugins/e2e/results/*.xml")
+            }
+        }
+    }
+
+    stage('Destroy environment') {
+        if (!environmentDestroy) {
+            input(message: "Proceed to environment destroy ?")
+        }
+        timeout(30) {
+            withCredentials([usernamePassword(credentialsId: 'hvcore-ssh', usernameVariable: 'SSHUSER', passwordVariable: 'SSHPASS')]) {
+                sh(script: "set -o pipefail; sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \"${SSHUSER}\"@${hvJumpHost} 'Get-ChildItem Env:; git checkout ${BRANCH_NAME}; git pull; caasp-hyperv.ps1 destroy -caaspImage ${image} -stackName ${stackName} -masters ${masterCount} -workers ${workerCount} -Force' 2>&1 | tee ${WORKSPACE}/logs/caasp-hyperv.log")
+            }
+        }
+    }
+
+    stage('Cleanup') {
+        if (workspaceCleanup) {
+            try {
+                cleanWs()
+            } catch (Exception exc) {
+                echo "Failed to clean workspace"
+            }
+        } else {
+            echo "Skipping Cleanup as request was made to NOT cleanup the workspace"
+        }
+    }
+}
