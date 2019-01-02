@@ -8,7 +8,7 @@ properties([
 
         string(name: 'PLATFORM_ENDPOINT', defaultValue: '10.84.149.23', description: 'Hyperv endpoint to connect to'),
         string(name: 'CREDENTIALS_ID', defaultValue: 'hvcore-ssh', description: 'Jenkins Hyperv credentials ID for SSH'),
-        booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')
+        booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: false, description: 'Cleanup workspace once done ?')
     ])
 ])
 
