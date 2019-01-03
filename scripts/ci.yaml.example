@@ -1,0 +1,36 @@
+jenkins:
+  # $JENKINS_URL
+  ## url: "https://10.10.10.10:8080"
+  view: "default"
+  authentication:
+    enabled: True
+    # $JENKINS_USER
+    ## user: "jenkins_user"
+
+    # $JENKINS_PASSWORD
+    ## password: "jenkins_passowrd"
+
+    # $JENKINS_CRUMB
+    ## crumb: "Jenkins-Crumb:e3d49c085347bf2cc24aca382f698a70"
+
+parameters:
+  # Name of the stack to test, caasp|microos
+  stack: "caasp"
+
+  # IMAGE parameter
+  image: True
+
+  # IMAGE_URL parameter
+  image_url: True
+
+jobs:
+  hyperv:
+    - name: "hyperv-1m2w"
+      parameters:
+        MASTER_COUNT: 1
+        WORKER_COUNT: 2
+
+    - name: "hyperv-3m2w"
+      parameters:
+        MASTER_COUNT: 3
+        WORKER_COUNT: 2
