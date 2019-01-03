@@ -18,7 +18,7 @@ properties([
         string(name: 'WORKER_CPU', defaultValue: '1', description: 'VCPU of Worker Nodes'),
 
         string(name: 'PLATFORM_ENDPOINT', defaultValue: 'jazz.qa.prv.suse.net', description: 'vCenter endpoint to connect to'),
-        string(name: 'CREDENTIALS_ID', defaultValue: 'vcenter-api', description: 'Jenkins Hyperv credentials ID for SSH'),
+        string(name: 'CREDENTIALS_ID', defaultValue: 'vcenter-api', description: 'vCenter API credentials ID'),
 
         booleanParam(name: 'CHOOSE_CRIO', defaultValue: false, description: 'Use crio as container engine ?'),
         booleanParam(name: 'ENVIRONMENT_DESTROY', defaultValue: false, description: 'Destroy env once done ? if false, manual action is required'),
@@ -28,7 +28,6 @@ properties([
     ])
 ])
 
-//TODO remove all zypper steps, pssh, velum-interactions
 def PLATFORM = "vmware"
 
 def configurationMap = [

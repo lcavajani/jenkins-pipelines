@@ -3,18 +3,17 @@ properties([
     buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
     disableConcurrentBuilds(),
     parameters([
-        string(name: 'IMAGE', defaultValue: '', description: 'CaaSP Hyperv Image To Use'),
-        string(name: 'IMAGE_URL', defaultValue: '', description: 'CaaSP Hyperv Image URL'),
+        string(name: 'IMAGE', defaultValue: '', description: 'CaaSP VMware Image To Use'),
+        string(name: 'IMAGE_URL', defaultValue: '', description: 'CaaSP VMware Image URL'),
 
-        string(name: 'PLATFORM_ENDPOINT', defaultValue: '10.84.149.23', description: 'Hyperv endpoint to connect to'),
-        string(name: 'CREDENTIALS_ID', defaultValue: 'hvcore-ssh', description: 'Jenkins Hyperv credentials ID for SSH'),
+        string(name: 'PLATFORM_ENDPOINT', defaultValue: 'jazz.qa.prv.suse.net', description: 'vCenter endpoint to connect to'),
+        string(name: 'CREDENTIALS_ID', defaultValue: 'vcenter-api', description: 'vCenter API credentials ID'),
+
         booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: false, description: 'Cleanup workspace once done ?')
     ])
 ])
 
-//TODO remove all zypper steps, pssh, velum-interactions
-
-def PLATFORM = "hyperv"
+def PLATFORM = "vmware"
 
 def configurationMap = [
     platformEndpoint: params.get('PLATFORM_ENDPOINT'),
