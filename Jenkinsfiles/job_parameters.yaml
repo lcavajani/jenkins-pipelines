@@ -1,0 +1,20 @@
+hyperv:
+  platform_endpoint: "10.84.149.23"
+  credentials_id: "hvcore-ssh"
+
+vmware:
+  platform_endpoint: "jazz.qa.prv.suse.net"
+  credentials_id: "vcenter-api"
+
+default:
+  admin_ram: "8192"
+  admin_cpu: "4"
+  master_count: "1"
+  master_ram: "4096"
+  master_cpu: "2"
+  worker_count: "2"
+  worker_ram: "2018"
+  worker_cpu: "1"
+  choose_crio: false
+  environment_destroy: true
+  workspace_cleanup: true
