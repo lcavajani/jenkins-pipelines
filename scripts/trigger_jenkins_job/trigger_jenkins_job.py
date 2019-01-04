@@ -180,7 +180,7 @@ def create_params_all_platforms(ci_config, image_files, changed_images):
 
                     # manage if default parameters are provided in config
                     if base_url.query:
-                        query = base_url.query + "," + params
+                        query = base_url.query + "&" + params
                     else:
                         query = params
 

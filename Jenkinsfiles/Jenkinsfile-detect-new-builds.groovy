@@ -4,15 +4,19 @@ properties([
     disableConcurrentBuilds(),
     parameters([
         string(name: 'IMAGES_REPO', defaultValue: 'http://download.suse.de/ibs/Devel:/CASP:/Head:/ControllerNode/images-sle15/', description: 'URL of the image download repository'),
-        string(name: 'RESULTS_REPO', defaultValue: 'gitlab@gitlab.suse.de:lcavajani/caasp-builds.git', description: 'Git repository to store the results of availabe builds')
+        //string(name: 'RESULTS_REPO', defaultValue: 'gitlab@gitlab.suse.de:lcavajani/caasp-builds.git', description: 'Git repository to store the results of availabe builds')
+        string(name: 'RESULTS_REPO', defaultValue: 'git@github.com:lcavajani/caasp-builds.git', description: 'Git repository to store the results of availabe builds')
     ])
 ])
+
+// manage file name in parameters file
 
 def configurationMap = [
     imagesRepo: params.get('IMAGES_REPO'),
     resultsGitRepo: params.get('RESULTS_REPO'),
     resultsDir: "caasp-builds",
     resultsFile: "files_repo.json",
+    jobCiFile: "push-images.yaml",
     branchName: 'master',
     credentialsId: 'jenkins-gitlab'
 ]
@@ -20,7 +24,8 @@ def configurationMap = [
 node {
     checkout scm
 
-    def common = load("./methods/common.groovy")
+    def common = load("./Jenkinsfiles/methods/common.groovy")
+    def defaultParameters = common.readDefaultJobParameters()
 
     stage('preparation') {
         stage('node Info') {
@@ -31,9 +36,9 @@ node {
             common.setUpWorkspace()
         }
 
-        stage('clone Kubic repos') {
-            common.cloneKubicRepos(configurationMap)
-        }
+        //stage('clone Kubic repos') {
+        //    common.cloneKubicRepos(configurationMap)
+        //}
 
         stage('clone caasp-build repos') {
             sh(script: "mkdir -p ${WORKSPACE}/caasp-builds")
@@ -47,22 +52,27 @@ node {
     }
 
     stage('retrieve available builds') {
-        dir("${WORKSPACE}/automation/misc-tools") {
+        //dir('automation/misc-tools') {
+        dir('scripts') {
             sh(script: "./list_image_repo.py -u ${configurationMap.imagesRepo} -o ${WORKSPACE}/${configurationMap.resultsDir}/${configurationMap.resultsFile} -d -c ${WORKSPACE}/${configurationMap.resultsDir}")
         }
     }
 
-    stage('list changed files') {
-        dir("${WORKSPACE}/caasp-builds") {
-            sh(script: "git add *")
-            sh(script: "git status --short  | awk '{ print $2 }'")
+    stage('trigger jobs') {
+        dir('scripts/trigger_jenkins_job') {
+            withCredentials([usernamePassword(credentialsId: defaultParameters.jenkins.credentials_id, usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {
+                jenkinsCrumb = sh(returnStdout: true, script: "curl -u \"${JENKINS_USER}:${JENKINS_PASSWORD}\" '${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'")
+                // TODO: manage ci-job filenames in defaultParameters
+                sh(script: "export JENKINS_CRUMB=${jenkinsCrumb};./trigger_jenkins_job.py -f ${WORKSPACE}/${configurationMap.resultsDir}/${configurationMap.resultsFile} -c ${configurationMap.jobCiFile} -d ${WORKSPACE}/${configurationMap.resultsDir} --auto")
+            }
         }
     }
+
     //stage('push results to GitLab') {
     //    withCredentials([sshUserPrivateKey(credentialsId: configurationMap.credentialsId, keyFileVariable: "SSH_KEY_PATH")]) {
 
 
-    //        sh(script: "git --no-pager diff --name-only \$GIT_PREVIOUS_COMMIT \$GIT_COMMIT")
+    //        sh(script: "git add & commit")
     //    }
     //}
 }
