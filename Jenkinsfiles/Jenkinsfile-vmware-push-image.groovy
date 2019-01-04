@@ -1,36 +1,27 @@
+def PLATFORM = "vmware"
+
 // Configure the build properties
 properties([
     buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
     disableConcurrentBuilds(),
     parameters([
-        string(name: 'IMAGE', defaultValue: '', description: 'CaaSP VMware Image To Use'),
-        string(name: 'IMAGE_URL', defaultValue: '', description: 'CaaSP VMware Image URL'),
+        string(name: 'IMAGE', defaultValue: '', description: "CaaSP ${PLATFORM} Image To Use"),
+        string(name: 'IMAGE_URL', defaultValue: '', description: "CaaSP ${PLATFORM} Image URL"),
 
-        string(name: 'PLATFORM_ENDPOINT', defaultValue: 'jazz.qa.prv.suse.net', description: 'vCenter endpoint to connect to'),
-        string(name: 'CREDENTIALS_ID', defaultValue: 'vcenter-api', description: 'vCenter API credentials ID'),
+        string(name: 'PLATFORM_ENDPOINT', description: "Endpoint ${PLATFORM} to connect to"),
+        string(name: 'CREDENTIALS_ID', description: "Jenkins ${PLATFORM} credentials ID"),
 
-        booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: false, description: 'Cleanup workspace once done ?')
+        booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')
     ])
 ])
 
-def PLATFORM = "vmware"
-
-def configurationMap = [
-    platformEndpoint: params.get('PLATFORM_ENDPOINT'),
-    credentialsId: params.get('CREDENTIALS_ID'),
-    branchName: 'master',
-
-    image: params.get('IMAGE'),
-    imageSourceUrl: params.get('IMAGE_URL'),
-
-    workspaceCleanup: params.get('WORKSPACE_CLEANUP')
-]
-
+//TODO remove all zypper steps, pssh, velum-interactions
 node {
     checkout scm
 
-    def common = load("${WORKSPACE}/methods/common.groovy")
-    def platform = load("${WORKSPACE}/methods/${PLATFORM}.groovy")
+    def common = load("./Jenkinsfiles/methods/common.groovy")
+    def defaultParameters = common.readDefaultJobParameters()
+    def configurationMap = common.readJobParameters(PLATFORM, params, defaultParameters)
 
     stage('preparation') {
         stage('node Info') {
@@ -39,6 +30,14 @@ node {
 
         stage('set up workspace') {
             common.setUpWorkspace()
+
+            // SPECIFIC, should be changed when merged
+            sh(script: "mkdir -p ${WORKSPACE}/caasp-vmware")
+            dir("caasp-vmware") {
+                checkout([$class: 'GitSCM', branches: [[name: "*/master"]],
+                userRemoteConfigs: [[url: ('https://github.com/lcavajani/caasp-vmware.git')]], extensions: [[$class: 'CleanCheckout']]])
+            }
+            sh(script: "cp -Rf ${WORKSPACE}/caasp-vmware ${WORKSPACE}/automation/")
         }
 
         stage('clone Kubic repos') {

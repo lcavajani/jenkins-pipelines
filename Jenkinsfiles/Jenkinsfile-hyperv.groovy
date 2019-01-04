@@ -38,54 +38,54 @@ node {
     def configurationMap = common.readJobParameters(PLATFORM, params, defaultParameters)
     def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")
 
-    //stage('preparation') {
-    //    stage('node Info') {
-    //        common.nodeInfo()
-    //    }
+    stage('preparation') {
+        stage('node Info') {
+            common.nodeInfo()
+        }
 
-    //    stage('set up workspace') {
-    //        common.setUpWorkspace()
-    //    }
+        stage('set up workspace') {
+            common.setUpWorkspace()
+        }
 
-    //    stage('clone Kubic repos') {
-    //        common.cloneKubicRepos(configurationMap)
-    //    }
-    //}
+        stage('clone Kubic repos') {
+            common.cloneKubicRepos(configurationMap)
+        }
+    }
 
-    //stage('push image') {
-    //    if (!configurationMap.imageSourceUrl) {
-    //        echo 'No image source URL provided, skipping task...'
-    //    } else {
-    //        platform.pushImage(configurationMap)
-    //    }
-    //}
+    stage('push image') {
+        if (!configurationMap.imageSourceUrl) {
+            echo 'No image source URL provided, skipping task...'
+        } else {
+            platform.pushImage(configurationMap)
+        }
+    }
 
-    //stage('create environment') {
-    //    platform.createEnvironment(configurationMap)
-    //}
+    stage('create environment') {
+        platform.createEnvironment(configurationMap)
+    }
 
-    //stage('configure environment') {
-    //    common.configureEnvironment(configurationMap)
-    //}
+    stage('configure environment') {
+        common.configureEnvironment(configurationMap)
+    }
 
-    //stage('run Sonobuoy conformance tests') {
-    //    common.runSonobuoyConformanceTests()
-    //}
+    stage('run Sonobuoy conformance tests') {
+        common.runSonobuoyConformanceTests()
+    }
 
-    //stage('destroy environment') {
-    //    if (!configurationMap.environmentDestroy) {
-    //        input(message: "Proceed to environment destroy ?")
-    //    }
+    stage('destroy environment') {
+        if (!configurationMap.environmentDestroy) {
+            input(message: "Proceed to environment destroy ?")
+        }
 
-    //    platform.destroyEnvironment(configurationMap)
-    //}
+        platform.destroyEnvironment(configurationMap)
+    }
 
-    //stage('Workspace cleanup') {
-    //    if (configurationMap.workspaceCleanup) {
-    //        common.workspaceCleanup()
-    //    } else {
-    //        echo "Skipping Cleanup as request was made to NOT cleanup the workspace"
-    //    }
-    //}
+    stage('Workspace cleanup') {
+        if (configurationMap.workspaceCleanup) {
+            common.workspaceCleanup()
+        } else {
+            echo "Skipping Cleanup as request was made to NOT cleanup the workspace"
+        }
+    }
 }
 

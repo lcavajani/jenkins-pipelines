@@ -47,6 +47,11 @@ node {
         }
     }
 
+    stage('trigger jobs') {
+        dir('scripts/') 
+
+    }
+
     stage('Workspace cleanup') {
         if (configurationMap.workspaceCleanup) {
             common.workspaceCleanup()

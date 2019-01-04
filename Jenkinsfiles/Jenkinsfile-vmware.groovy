@@ -1,63 +1,40 @@
+def PLATFORM = "vmware"
+
 // Configure the build properties
 properties([
     buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
     //disableConcurrentBuilds(),
     parameters([
-        string(name: 'IMAGE', defaultValue: 'lcavajani/SUSE-CaaS-Platform-3.0-for-VMware.x86_64-3.0.0-GM.vmdk', description: 'CaaSP VMware Image To Use'),
-        string(name: 'IMAGE_URL', defaultValue: '', description: 'CaaSP VMware Image URL'),
+        string(name: 'IMAGE', defaultValue: 'lcavajani/SUSE-CaaS-Platform-3.0-for-VMware.x86_64-3.0.0-GM.vmdk', description: "CaaSP ${PLATFORM} Image To Use"),
+        string(name: 'IMAGE_URL', description: "CaaSP ${PLATFORM} Image URL"),
 
-        string(name: 'ADMIN_RAM', defaultValue: '8192', description: 'Memory of Admin Node'),
-        string(name: 'ADMIN_CPU', defaultValue: '4', description: 'VCPU of Admin Node'),
+        string(name: 'ADMIN_RAM', description: 'Memory of Admin Node'),
+        string(name: 'ADMIN_CPU', description: 'VCPU of Admin Node'),
 
-        string(name: 'MASTER_COUNT', defaultValue: '1', description: 'Number of Master Nodes'),
-        string(name: 'MASTER_RAM', defaultValue: '4096', description: 'Memory of Master Nodes'),
-        string(name: 'MASTER_CPU', defaultValue: '2', description: 'VCPU of Master Nodes'),
+        string(name: 'MASTER_COUNT', description: 'Number of Master Nodes'),
+        string(name: 'MASTER_RAM', description: 'Memory of Master Nodes'),
+        string(name: 'MASTER_CPU', description: 'VCPU of Master Nodes'),
 
-        string(name: 'WORKER_COUNT', defaultValue: '2', description: 'Number of Worker Nodes'),
-        string(name: 'WORKER_RAM', defaultValue: '2048', description: 'Memory of Worker Nodes'),
-        string(name: 'WORKER_CPU', defaultValue: '1', description: 'VCPU of Worker Nodes'),
+        string(name: 'WORKER_COUNT', description: 'Number of Worker Nodes'),
+        string(name: 'WORKER_RAM', description: 'Memory of Worker Nodes'),
+        string(name: 'WORKER_CPU', description: 'VCPU of Worker Nodes'),
 
-        string(name: 'PLATFORM_ENDPOINT', defaultValue: 'jazz.qa.prv.suse.net', description: 'vCenter endpoint to connect to'),
-        string(name: 'CREDENTIALS_ID', defaultValue: 'vcenter-api', description: 'vCenter API credentials ID'),
+        string(name: 'PLATFORM_ENDPOINT', description: "Endpoint ${PLATFORM} to connect to"),
+        string(name: 'CREDENTIALS_ID', description: "Jenkins ${PLATFORM} credentials ID"),
 
         booleanParam(name: 'CHOOSE_CRIO', defaultValue: false, description: 'Use crio as container engine ?'),
-        booleanParam(name: 'ENVIRONMENT_DESTROY', defaultValue: false, description: 'Destroy env once done ? if false, manual action is required'),
+        booleanParam(name: 'ENVIRONMENT_DESTROY', defaultValue: true, description: 'Destroy env once done ? if false, manual action is required'),
         booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')
-
-
     ])
 ])
-
-def PLATFORM = "vmware"
-
-def configurationMap = [
-    platformEndpoint: params.get('PLATFORM_ENDPOINT'),
-    credentialsId: params.get('CREDENTIALS_ID'),
-    stackName: "${JOB_NAME}-${BUILD_NUMBER}".replace("/", "-"),
-    branchName: 'master',
-
-    image: params.get('IMAGE'),
-    imageSourceUrl: params.get('IMAGE_URL'),
-    adminRam: params.get('ADMIN_RAM'),
-    adminCpu: params.get('ADMIN_CPU').toInteger(),
-    masterRam: params.get('MASTER_RAM'),
-    masterCpu: params.get('MASTER_CPU').toInteger(),
-    masterCount: params.get('MASTER_COUNT').toInteger(),
-    workerRam: params.get('WORKER_RAM'),
-    workerCpu: params.get('WORKER_CPU').toInteger(),
-    workerCount: params.get('WORKER_COUNT').toInteger(),
-
-    chooseCrio: params.get('CHOOSE_CRIO'),
-    environmentDestroy: params.get('ENVIRONMENT_DESTROY'),
-    workspaceCleanup: params.get('WORKSPACE_CLEANUP')
-]
-
 
 node {
     checkout scm
 
-    def common = load("${WORKSPACE}/methods/common.groovy")
-    def platform = load("${WORKSPACE}/methods/${PLATFORM}.groovy")
+    def common = load("./Jenkinsfiles/methods/common.groovy")
+    def defaultParameters = common.readDefaultJobParameters()
+    def configurationMap = common.readJobParameters(PLATFORM, params, defaultParameters)
+    def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")
 
     stage('preparation') {
         stage('node Info') {

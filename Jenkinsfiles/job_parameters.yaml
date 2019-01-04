@@ -6,6 +6,9 @@ vmware:
   platform_endpoint: "jazz.qa.prv.suse.net"
   credentials_id: "vcenter-api"
 
+jenkins:
+  credentials_id: "jenkins-api"
+
 default:
   admin_ram: "8192"
   admin_cpu: "4"
