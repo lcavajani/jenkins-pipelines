@@ -312,9 +312,6 @@ def retrieve_authentication(ci_config):
 def main():
     args = parse_args()
 
-    # load image files
-    image_files = open_file(args.images_file, "json")
-
     # load CI configuration and create build job url
     ci_config = open_file(args.ci_jobfile, "yaml")
     ci_config = create_jenkins_job_baseurl(ci_config)
@@ -328,6 +325,9 @@ def main():
         print("INFO: dry-run mode activated")
 
     if args.auto:
+        # load image files
+        image_files = open_file(args.images_file, "json")
+
         changed_images = list_files_to_commit(args.git_directory)
         changed_images = filter_results("^SUSE|^SLE", changed_images,
                                         action="match", ignore_case=True)
