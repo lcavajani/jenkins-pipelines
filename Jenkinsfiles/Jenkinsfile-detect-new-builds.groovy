@@ -36,10 +36,6 @@ node {
             common.setUpWorkspace()
         }
 
-        //stage('clone Kubic repos') {
-        //    common.cloneKubicRepos(configurationMap)
-        //}
-
         stage('clone caasp-build repos') {
             sh(script: "mkdir -p ${WORKSPACE}/caasp-builds")
 
@@ -52,7 +48,6 @@ node {
     }
 
     stage('retrieve available builds') {
-        //dir('automation/misc-tools') {
         dir('scripts') {
             sh(script: "./list_image_repo.py -u ${configurationMap.imagesRepo} -o ${WORKSPACE}/${configurationMap.resultsDir}/${configurationMap.resultsFile} -d -c ${WORKSPACE}/${configurationMap.resultsDir}")
         }
