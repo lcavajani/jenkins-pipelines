@@ -8,8 +8,8 @@ properties([
         string(name: 'IMAGE', description: "CaaSP ${PLATFORM} Image To Use"),
         string(name: 'IMAGE_URL', description: "CaaSP ${PLATFORM} Image URL"),
 
-        string(name: 'PLATFORM_ENDPOINT', description: "Endpoint ${PLATFORM} to connect to"),
-        string(name: 'CREDENTIALS_ID', description: "Jenkins ${PLATFORM} credentials ID"),
+        string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: "Endpoint ${PLATFORM} to connect to"),
+        string(name: 'CREDENTIALS_ID', defaultValue: '', description: "Jenkins ${PLATFORM} credentials ID"),
 
         booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')
     ])

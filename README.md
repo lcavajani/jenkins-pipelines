@@ -31,3 +31,7 @@ zypper in python-glanceclient python-novaclient terraform
 **KVM**
 
 zypper in python-glanceclient python-novaclient terraform-libvirt
+
+
+
+* use empty default valus in pipeline to avoid null param
