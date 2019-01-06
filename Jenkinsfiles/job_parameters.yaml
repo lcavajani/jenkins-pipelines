@@ -9,6 +9,10 @@ vmware:
 jenkins:
   credentials_id: "jenkins-api"
 
+git:
+#  credentials_id: "jenkins-gitlab-github"
+  credentials_id: "jenkins-gitlab"
+
 default:
   admin_ram: "8192"
   admin_cpu: "4"
@@ -21,3 +25,7 @@ default:
   choose_crio: false
   environment_destroy: true
   workspace_cleanup: true
+
+available_builds:
+  results_dir: "caasp-builds"
+  results_file: "files_repo.json"

@@ -20,6 +20,7 @@ def call(platform, params, defaultParams) {
     //    }
 
     def parametersMap = [
+        platform: platform,
         platformEndpoint: (p.get('PLATFORM_ENDPOINT') == '') ? dp.get(platform).platform_endpoint : p.get('PLATFORM_ENDPOINT'),
         credentialsId: (p.get('CREDENTIALS_ID') == '') ? dp.get(platform).credentials_id : p.get('CREDENTIALS_ID'),
         stackName: "${JOB_NAME}-${BUILD_NUMBER}".replace('/', '-'),

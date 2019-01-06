@@ -22,6 +22,8 @@ node {
     def common = load("./Jenkinsfiles/methods/common.groovy")
     def defaultParameters = common.readDefaultJobParameters()
     def configurationMap = common.readJobParameters(PLATFORM, params, defaultParameters)
+    configurationMap.jobsCiFile = 'push-images.yaml'
+
 
     stage('preparation') {
         stage('node Info') {

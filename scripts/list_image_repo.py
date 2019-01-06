@@ -30,7 +30,7 @@ def parse_args():
     cli_argparser = argparse.ArgumentParser(description="Process args")
     cli_argparser.add_argument("--url", "-u", required=True, action="store",
                                help="url of the image download repository")
-    cli_argparser.add_argument("--result-file", "-o", required=False,
+    cli_argparser.add_argument("--results-file", "-o", required=False,
                                default="files_repo.json", action="store",
                                help="output file to store the results")
     cli_argparser.add_argument("--download-checksum", "-d", required=False,
@@ -105,7 +105,7 @@ def write_file(path, content):
 
 def main():
     args = parse_args()
-    result_file = args.result_file
+    results_file = args.results_file
     download_checksum = args.download_checksum
     checksum_dir = args.checksum_dir
     insecure = args.insecure
@@ -125,7 +125,7 @@ def main():
 
     print("INFO: Available files:")
     print(json_output)
-    write_file(result_file, json_output)
+    write_file(results_file, json_output)
 
     if download_checksum:
         print("INFO: Retrieving sha256 checkfum files\n")

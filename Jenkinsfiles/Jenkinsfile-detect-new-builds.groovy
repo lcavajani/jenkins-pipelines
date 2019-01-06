@@ -14,17 +14,16 @@ properties([
 def configurationMap = [
     imagesRepo: params.get('IMAGES_REPO'),
     resultsGitRepo: params.get('RESULTS_REPO'),
-    resultsDir: "caasp-builds",
-    resultsFile: "files_repo.json",
-    jobCiFile: "push-images.yaml",
-    branchName: 'master',
-    credentialsId: 'jenkins-gitlab'
+    jobsCiFile: 'push-images.yaml',
+    triggerJobMode: 'auto',
+    // TODO: change
+    branchName: 'master'
 ]
 
 node {
     checkout scm
 
-    def common = load("./Jenkinsfiles/methods/common.groovy")
+    def common = load('./Jenkinsfiles/methods/common.groovy')
     def defaultParameters = common.readDefaultJobParameters()
 
     stage('preparation') {
@@ -41,25 +40,19 @@ node {
 
             dir("caasp-builds") {
                 checkout([$class: 'GitSCM', branches: [[name: "*/${configurationMap.branchName}"]],
-                userRemoteConfigs: [[credentialsId: configurationMap.credentialsId, url: configurationMap.resultsGitRepo]],
+                userRemoteConfigs: [[credentialsId: defaultParameters.git.credentials_id, url: configurationMap.resultsGitRepo]],
                 extensions: [[$class: 'CleanCheckout']]])
             }
         }
     }
 
     stage('retrieve available builds') {
-        dir('scripts') {
-            sh(script: "./list_image_repo.py -u ${configurationMap.imagesRepo} -o ${WORKSPACE}/${configurationMap.resultsDir}/${configurationMap.resultsFile} -d -c ${WORKSPACE}/${configurationMap.resultsDir}")
-        }
+        common.retrieveAvailableBuilds(configurationMap, defaultParameters)
     }
 
     stage('trigger jobs') {
         dir('scripts/trigger_jenkins_job') {
-            withCredentials([usernamePassword(credentialsId: defaultParameters.jenkins.credentials_id, usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {
-                jenkinsCrumb = sh(returnStdout: true, script: "curl -u \"${JENKINS_USER}:${JENKINS_PASSWORD}\" '${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'")
-                // TODO: manage ci-job filenames in defaultParameters
-                sh(script: "export JENKINS_CRUMB=${jenkinsCrumb};./trigger_jenkins_job.py -f ${WORKSPACE}/${configurationMap.resultsDir}/${configurationMap.resultsFile} -c ${configurationMap.jobCiFile} -d ${WORKSPACE}/${configurationMap.resultsDir} --auto")
-            }
+            common.retrieveAvailableBuilds(configurationMap, defaultParameters)
         }
     }
 

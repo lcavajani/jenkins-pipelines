@@ -28,10 +28,19 @@ def readJobParameters(PLATFORM, params, defaultParams) {
     task(PLATFORM, params, defaultParams)
 }
 
+def retrieveAvailableBuilds(Map conf, defaultParams) {
+    def task = load("./Jenkinsfiles/methods/common/retrieveAvailableBuilds.groovy")
+    task(conf, defaultParams)
+}
 
 def runSonobuoyConformanceTests() {
     def task= load("./Jenkinsfiles/methods/common/runSonobuoyConformanceTests.groovy")
     task()
+}
+
+def triggerJenkinsJob(Map conf, defaultParams) {
+    def task = load("./Jenkinsfiles/methods/common/triggerJenkinsJob.groovy")
+    task(conf, defaultParams)
 }
 
 def workspaceCleanup() {

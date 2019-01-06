@@ -5,22 +5,22 @@ properties([
     buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
     //disableConcurrentBuilds(),
     parameters([
-        string(name: 'IMAGE', defaultValue: 'SUSE-CaaS-Platform-3.0-for-MS-HyperV.x86_64-3.0.0-GM', description: "CaaSP ${PLATFORM} Image To Use"),
-        string(name: 'IMAGE_URL', description: "CaaSP ${PLATFORM} Image URL"),
+        string(name: 'IMAGE', defaultValue: 'SUSE-CaaS-Platform-3.0-for-MS-HyperV.x86_64-3.0.0-GM', description: "CaaSP ${PLATFORM} image"),
+        string(name: 'IMAGE_URL', defaultValue: '', description: "CaaSP ${PLATFORM} image URL"),
 
-        string(name: 'ADMIN_RAM', description: 'Memory of Admin Node'),
-        string(name: 'ADMIN_CPU', description: 'VCPU of Admin Node'),
+        string(name: 'ADMIN_RAM', defaultValue: '', description: 'Memory of admin node'),
+        string(name: 'ADMIN_CPU', defaultValue: '', description: 'vCPU of admin node'),
 
-        string(name: 'MASTER_COUNT', description: 'Number of Master Nodes'),
-        string(name: 'MASTER_RAM', description: 'Memory of Master Nodes'),
-        string(name: 'MASTER_CPU', description: 'VCPU of Master Nodes'),
+        string(name: 'MASTER_COUNT', defaultValue: '', description: 'Number of master nodes'),
+        string(name: 'MASTER_RAM', defaultValue: '', description: 'Memory of master nodes'),
+        string(name: 'MASTER_CPU', defaultValue: '', description: 'vCPU of master nodes'),
 
-        string(name: 'WORKER_COUNT', description: 'Number of Worker Nodes'),
-        string(name: 'WORKER_RAM', description: 'Memory of Worker Nodes'),
-        string(name: 'WORKER_CPU', description: 'VCPU of Worker Nodes'),
+        string(name: 'WORKER_COUNT', defaultValue: '', description: 'Number of worker nodes'),
+        string(name: 'WORKER_RAM', defaultValue: '', description: 'Memory of worker nodes'),
+        string(name: 'WORKER_CPU', defaultValue: '', description: 'vCPU of worker nodes'),
 
-        string(name: 'PLATFORM_ENDPOINT', description: "Endpoint ${PLATFORM} to connect to"),
-        string(name: 'CREDENTIALS_ID', description: "Jenkins ${PLATFORM} credentials ID"),
+        string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: "Endpoint ${PLATFORM} to connect to"),
+        string(name: 'CREDENTIALS_ID', defaultValue: '', description: "Jenkins ${PLATFORM} credentials ID"),
 
         booleanParam(name: 'CHOOSE_CRIO', defaultValue: false, description: 'Use crio as container engine ?'),
         booleanParam(name: 'ENVIRONMENT_DESTROY', defaultValue: true, description: 'Destroy env once done ? if false, manual action is required'),
