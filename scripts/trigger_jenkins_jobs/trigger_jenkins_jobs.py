@@ -218,7 +218,7 @@ def create_params_specific_platform(ci_config, platform, image, image_url):
 
         # manage if default parameters are provided in config
         if base_url.query:
-            query = base_url.query + "," + params
+            query = base_url.query + "&" + params
         else:
             query = params
 
