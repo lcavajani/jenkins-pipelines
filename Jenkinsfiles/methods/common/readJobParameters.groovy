@@ -7,7 +7,7 @@
 //}
 
 
-def call(platform, params, defaultParams) {
+def call(PLATFORM, Map params, Map defaultParams) {
     def p = params
     def dp = defaultParams
 
@@ -20,9 +20,9 @@ def call(platform, params, defaultParams) {
     //    }
 
     def parametersMap = [
-        platform: platform,
-        platformEndpoint: (p.get('PLATFORM_ENDPOINT') == '') ? dp.get(platform).platform_endpoint : p.get('PLATFORM_ENDPOINT'),
-        credentialsId: (p.get('CREDENTIALS_ID') == '') ? dp.get(platform).credentials_id : p.get('CREDENTIALS_ID'),
+        platform: PLATFORM,
+        platformEndpoint: (p.get('PLATFORM_ENDPOINT') == '') ? dp.get(PLATFORM).platform_endpoint : p.get('PLATFORM_ENDPOINT'),
+        credentialsId: (p.get('CREDENTIALS_ID') == '') ? dp.get(PLATFORM).credentials_id : p.get('CREDENTIALS_ID'),
         stackName: "${JOB_NAME}-${BUILD_NUMBER}".replace('/', '-'),
         // TODO: change
         branchName: 'master',

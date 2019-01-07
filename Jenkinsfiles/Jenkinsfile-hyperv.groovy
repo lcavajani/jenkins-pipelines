@@ -34,8 +34,8 @@ node {
     checkout scm
 
     def common = load("./Jenkinsfiles/methods/common.groovy")
-    def defaultParameters = common.readDefaultJobParameters()
-    def configurationMap = common.readJobParameters(PLATFORM, params, defaultParameters)
+    def defaultJobParametersMap = common.readDefaultJobParameters()
+    def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
     def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")
 
     stage('preparation') {
@@ -48,24 +48,24 @@ node {
         }
 
         stage('clone Kubic repos') {
-            common.cloneKubicRepos(configurationMap)
+            common.cloneKubicRepos(jobParametersMap)
         }
     }
 
     stage('push image') {
-        if (!configurationMap.imageSourceUrl) {
+        if (!jobParametersMap.imageSourceUrl) {
             echo 'No image source URL provided, skipping task...'
         } else {
-            platform.pushImage(configurationMap)
+            platform.pushImage(jobParametersMap)
         }
     }
 
     stage('create environment') {
-        platform.createEnvironment(configurationMap)
+        platform.createEnvironment(jobParametersMap)
     }
 
     stage('configure environment') {
-        common.configureEnvironment(configurationMap)
+        common.configureEnvironment(jobParametersMap)
     }
 
     stage('run Sonobuoy conformance tests') {
@@ -73,15 +73,15 @@ node {
     }
 
     stage('destroy environment') {
-        if (!configurationMap.environmentDestroy) {
+        if (!jobParametersMap.environmentDestroy) {
             input(message: "Proceed to environment destroy ?")
         }
 
-        platform.destroyEnvironment(configurationMap)
+        platform.destroyEnvironment(jobParametersMap)
     }
 
     stage('Workspace cleanup') {
-        if (configurationMap.workspaceCleanup) {
+        if (jobParametersMap.workspaceCleanup) {
             common.workspaceCleanup()
         } else {
             echo "Skipping Cleanup as request was made to NOT cleanup the workspace"

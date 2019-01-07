@@ -20,8 +20,8 @@ node {
     checkout scm
 
     def common = load("./Jenkinsfiles/methods/common.groovy")
-    def defaultParameters = common.readDefaultJobParameters()
-    def configurationMap = common.readJobParameters(PLATFORM, params, defaultParameters)
+    def defaultJobParametersMap = common.readDefaultJobParameters()
+    def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
 
     stage('preparation') {
         stage('node Info') {
@@ -41,22 +41,22 @@ node {
         }
 
         stage('clone Kubic repos') {
-            common.cloneKubicRepos(configurationMap)
+            common.cloneKubicRepos(jobParametersMap)
         }
     }
 
     stage('push image') {
-        if (!configurationMap.imageSourceUrl) {
+        if (!jobParametersMap.imageSourceUrl) {
             echo 'No image source URL provided, skipping task...'
         } else {
-            echo configurationMap.image
-            echo configurationMap.imageSourceUrl
-            //platform.pushImage(configurationMap)
+            echo jobParametersMap.image
+            echo jobParametersMap.imageSourceUrl
+            //platform.pushImage(jobParametersMap)
         }
     }
 
     stage('Workspace cleanup') {
-        if (configurationMap.workspaceCleanup) {
+        if (jobParametersMap.workspaceCleanup) {
             common.workspaceCleanup()
         } else {
             echo "Skipping Cleanup as request was made to NOT cleanup the workspace"

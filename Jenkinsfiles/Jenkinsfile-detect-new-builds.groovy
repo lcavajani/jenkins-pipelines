@@ -11,7 +11,7 @@ properties([
 
 // manage file name in parameters file
 
-def configurationMap = [
+def jobParametersMap = [
     imagesRepo: params.get('IMAGES_REPO'),
     resultsGitRepo: params.get('RESULTS_REPO'),
     jobsCiFile: 'push-images.yaml',
@@ -24,7 +24,7 @@ node {
     checkout scm
 
     def common = load('./Jenkinsfiles/methods/common.groovy')
-    def defaultParameters = common.readDefaultJobParameters()
+    def defaultJobParametersMap = common.readDefaultJobParameters()
 
     stage('preparation') {
         stage('node Info') {
@@ -39,25 +39,23 @@ node {
             sh(script: "mkdir -p ${WORKSPACE}/caasp-builds")
 
             dir("caasp-builds") {
-                checkout([$class: 'GitSCM', branches: [[name: "*/${configurationMap.branchName}"]],
-                userRemoteConfigs: [[credentialsId: defaultParameters.git.credentials_id, url: configurationMap.resultsGitRepo]],
+                checkout([$class: 'GitSCM', branches: [[name: "*/${jobParametersMap.branchName}"]],
+                userRemoteConfigs: [[credentialsId: defaultJobParametersMap.git.credentials_id, url: jobParametersMap.resultsGitRepo]],
                 extensions: [[$class: 'CleanCheckout']]])
             }
         }
     }
 
     stage('retrieve available builds') {
-        common.retrieveAvailableBuilds(configurationMap, defaultParameters)
+        common.retrieveAvailableBuilds(jobParametersMap, defaultJobParametersMap)
     }
 
     stage('trigger jobs') {
-        dir('scripts/trigger_jenkins_job') {
-            common.triggerJenkinsJobs(configurationMap, defaultParameters)
-        }
+        common.triggerJenkinsJobs(jobParametersMap, defaultJobParametersMap)
     }
 
     //stage('push results to GitLab') {
-    //    withCredentials([sshUserPrivateKey(credentialsId: configurationMap.credentialsId, keyFileVariable: "SSH_KEY_PATH")]) {
+    //    withCredentials([sshUserPrivateKey(credentialsId: jobParametersMap.credentialsId, keyFileVariable: "SSH_KEY_PATH")]) {
 
 
     //        sh(script: "git add & commit")

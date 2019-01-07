@@ -1,4 +1,4 @@
-def call(Map conf) {
+def call(Map jobParams) {
     timeout(10) {
         dir('automation/misc-tools') {
             sh(script: "python3 ./wait-for-velum https://\$(jq '.minions[0].addresses.publicIpv4' -r ${WORKSPACE}/environment.json) --timeout 5")
@@ -15,7 +15,7 @@ def call(Map conf) {
     timeout(220) {
         dir('automation/velum-bootstrap') {
             try {
-                if (conf.chooseCrio) {
+                if (jobParams.chooseCrio) {
                     echo "Choosing cri-o"
                     sh(script: "./velum-interactions --configure --enable-tiller --environment ${WORKSPACE}/environment.json --choose-crio")
                 } else {

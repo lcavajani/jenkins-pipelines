@@ -20,9 +20,11 @@ node {
     checkout scm
 
     def common = load("./Jenkinsfiles/methods/common.groovy")
-    def defaultParameters = common.readDefaultJobParameters()
-    def configurationMap = common.readJobParameters(PLATFORM, params, defaultParameters)
-    configurationMap.jobsCiFile = 'push-images.yaml'
+    def defaultJobParametersMap = common.readDefaultJobParameters()
+    def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
+    jobParametersMap.jobsCiFile = 'test-images.yaml'
+    jobParametersMap.triggerJobDryRun = true
+
 
 
     stage('preparation') {
@@ -35,33 +37,26 @@ node {
         }
 
         stage('clone Kubic repos') {
-            common.cloneKubicRepos(configurationMap)
+            common.cloneKubicRepos(jobParametersMap)
         }
     }
 
     stage('push image') {
-        if (!configurationMap.imageSourceUrl) {
+        if (!jobParametersMap.imageSourceUrl) {
             echo 'No image source URL provided, skipping task...'
         } else {
-            echo configurationMap.image
-            echo configurationMap.imageSourceUrl
-            //platform.pushImage(configurationMap)
+            echo jobParametersMap.image
+            echo jobParametersMap.imageSourceUrl
+            //platform.pushImage(jobParametersMap)
         }
     }
 
     stage('trigger jobs') {
-        dir('scripts/trigger_jenkins_job') {
-            withCredentials([usernamePassword(credentialsId: defaultParameters.jenkins.credentials_id, usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {
-                jenkinsCrumb = sh(returnStdout: true, script: "curl -u \"${JENKINS_USER}:${JENKINS_PASSWORD}\" '${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'")
-                println jenkinsCrumb
-                // TODO: manage ci-job filenames
-                sh(script: "./trigger_jenkins_job.py -c test-images.yaml -p ${PLATFORM} -i ${configurationMap.image} -u ${configurationMap.imageSourceUrl} --dry-run")
-            }
-        }
+        common.triggerJenkinsJobs(jobParametersMap, defaultJobParametersMap)
     }
 
     stage('Workspace cleanup') {
-        if (configurationMap.workspaceCleanup) {
+        if (jobParametersMap.workspaceCleanup) {
             common.workspaceCleanup()
         } else {
             echo "Skipping Cleanup as request was made to NOT cleanup the workspace"

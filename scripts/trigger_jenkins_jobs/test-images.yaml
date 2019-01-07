@@ -21,7 +21,7 @@ parameters:
   image: True
 
   # IMAGE_URL parameter
-  image_url: True
+  image_url: False
 
 jobs:
   hyperv:

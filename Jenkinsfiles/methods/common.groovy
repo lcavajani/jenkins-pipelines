@@ -1,50 +1,50 @@
 def nodeInfo() {
-    def task = load("./Jenkinsfiles/methods/common/nodeInfo.groovy")
+    def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/nodeInfo.groovy")
     task()
 }
 
 def setUpWorkspace() {
-    def task = load("./Jenkinsfiles/methods/common/setUpWorkspace.groovy")
+    def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/setUpWorkspace.groovy")
     task()
 }
 
-def cloneKubicRepos(Map conf) {
-    def task = load("./Jenkinsfiles/methods/common/cloneKubicRepos.groovy")
-    task(conf)
+def cloneKubicRepos(Map jobParams) {
+    def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/cloneKubicRepos.groovy")
+    task(jobParams)
 }
 
-def configureEnvironment(Map conf) {
-    def task = load("./Jenkinsfiles/methods/common/configureEnvironment.groovy")
-    task(conf)
+def configureEnvironment(Map jobParams) {
+    def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/configureEnvironment.groovy")
+    task(jobParams)
 }
 
 def readDefaultJobParameters() {
-    def task = load("./Jenkinsfiles/methods/common/readDefaultJobParameters.groovy")
+    def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/readDefaultJobParameters.groovy")
     task()
 }
 
-def readJobParameters(PLATFORM, params, defaultParams) {
-    def task = load("./Jenkinsfiles/methods/common/readJobParameters.groovy")
+def readJobParameters(PLATFORM, Map params, Map defaultParams) {
+    def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/readJobParameters.groovy")
     task(PLATFORM, params, defaultParams)
 }
 
-def retrieveAvailableBuilds(Map conf, defaultParams) {
-    def task = load("./Jenkinsfiles/methods/common/retrieveAvailableBuilds.groovy")
-    task(conf, defaultParams)
+def retrieveAvailableBuilds(Map jobParams, Map defaultParams) {
+    def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/retrieveAvailableBuilds.groovy")
+    task(jobParams, defaultParams)
 }
 
 def runSonobuoyConformanceTests() {
-    def task= load("./Jenkinsfiles/methods/common/runSonobuoyConformanceTests.groovy")
+    def task= load("${WORKSPACE}/Jenkinsfiles/methods/common/runSonobuoyConformanceTests.groovy")
     task()
 }
 
-def triggerJenkinsJobs(Map conf, defaultParams) {
-    def task = load("./Jenkinsfiles/methods/common/triggerJenkinsJobs.groovy")
-    task(conf, defaultParams)
+def triggerJenkinsJobs(Map jobParams, Map defaultParams) {
+    def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/triggerJenkinsJobs.groovy")
+    task(jobParams, defaultParams)
 }
 
 def workspaceCleanup() {
-    def task = load("./Jenkinsfiles/methods/common/workspaceCleanup.groovy")
+    def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/workspaceCleanup.groovy")
     task()
 }
 

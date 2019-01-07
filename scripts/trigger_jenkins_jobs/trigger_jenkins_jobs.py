@@ -202,7 +202,16 @@ def create_params_specific_platform(ci_config, platform, image, image_url):
     image_query = "IMAGE={0}".format(image)
     image_url_query = "IMAGE_URL={0}".format(image_url)
 
-    params = "{0}&{1}".format(image_query, image_url_query)
+    use_image = ci_config["parameters"]["image"]
+    use_image_url = ci_config["parameters"]["image_url"]
+
+    query = []
+    if use_image:
+        query.append(image_query)
+    if use_image_url:
+        query.append(image_url_query)
+
+    params = "&".join(query)
 
     for job in ci_config["jobs"][platform]:
         base_url = urlsplit(job["url"])
