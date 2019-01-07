@@ -3,17 +3,8 @@ def call(Map jobParams, Map defaultParams) {
         withCredentials([usernamePassword(credentialsId: defaultParams.jenkins.credentials_id, usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {
             jenkinsCrumb = sh(returnStdout: true, script: "curl -u \"${JENKINS_USER}:${JENKINS_PASSWORD}\" '${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'")
 
-            //dryRunMode = ''
-            //if (jobParams.triggerJobDryRun) {
-            //    dryRunMode = '--dry-run'
-            //}
-
             def dryRunMode = (jobParams.triggerJobDryRun) ? '--dry-run' : ''
             def imageUrlParam = (jobParams.imageSourceUrl) ? "--image-url ${jobParams.imageSourceUrl}" : ''
-            //imageUrlParam = ''
-            //if (jobParams.imageSourceUrl) {
-            //    imageUrlParam = "--image-url ${jobParams.imageSourceUrl}"
-            //}
 
             if (jobParams.triggerJobMode == 'auto') {
                 def resultsDir = "${WORKSPACE}/${defaultParams.available_builds.results_dir}"
