@@ -25,12 +25,12 @@ parameters:
 
 jobs:
   hyperv:
-    - name: "hyperv-1m2w"
+    - name: "hyperv-1m2w-conformance"
       parameters:
         MASTER_COUNT: 1
         WORKER_COUNT: 2
 
-    - name: "hyperv-3m2w"
+    - name: "hyperv-3m2w-conformance"
       parameters:
         MASTER_COUNT: 3
         WORKER_COUNT: 2
