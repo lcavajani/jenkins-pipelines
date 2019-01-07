@@ -38,8 +38,8 @@ def runSonobuoyConformanceTests() {
     task()
 }
 
-def triggerJenkinsJob(Map conf, defaultParams) {
-    def task = load("./Jenkinsfiles/methods/common/triggerJenkinsJob.groovy")
+def triggerJenkinsJobs(Map conf, defaultParams) {
+    def task = load("./Jenkinsfiles/methods/common/triggerJenkinsJobs.groovy")
     task(conf, defaultParams)
 }
 

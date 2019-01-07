@@ -52,7 +52,7 @@ node {
 
     stage('trigger jobs') {
         dir('scripts/trigger_jenkins_job') {
-            common.retrieveAvailableBuilds(configurationMap, defaultParameters)
+            common.triggerJenkinsJobs(configurationMap, defaultParameters)
         }
     }
 
