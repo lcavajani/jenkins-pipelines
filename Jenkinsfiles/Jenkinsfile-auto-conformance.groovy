@@ -1,6 +1,6 @@
-// Configure the build properties
-def PLATFORM = sh(returnStdout: true, script: "echo ${JOB_BASE_NAME} | awk -F'-' '{ print $1 }'")
+def PLATFORM = currentBuild.projectName.split('-')[0]
 
+// Configure the build properties
 properties([
     buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
     //disableConcurrentBuilds(),
@@ -37,6 +37,11 @@ node {
     def defaultJobParametersMap = common.readDefaultJobParameters()
     def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
     def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")
+
+    // workaround to get/initialize the parameters available in the job
+    if (currentBuild.number == 1) {
+        return
+    }
 
     stage('preparation') {
         stage('node Info') {

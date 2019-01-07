@@ -1,4 +1,4 @@
-def PLATFORM = "hyperv"
+def PLATFORM = currentBuild.projectName.split('-')[0]
 
 // Configure the build properties
 properties([
@@ -25,7 +25,10 @@ node {
     jobParametersMap.jobsCiFile = 'test-images.yaml'
     jobParametersMap.triggerJobDryRun = true
 
-
+    // workaround to get/initialize the parameters available in the job
+    if (currentBuild.number == 1) {
+        return
+    }
 
     stage('preparation') {
         stage('node Info') {
