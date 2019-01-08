@@ -1,0 +1,67 @@
+# Default SCM
+- scm:
+    name: jenkins-pipelines
+    scm:
+      - git:
+         url: https://github.com/lcavajani/jenkins-pipelines
+         branches:
+          - origin/master
+
+# Standalone job, can be anything
+- job-template:
+    name: '{name}'
+    project-type: pipeline
+    sandbox: true
+    pipeline-scm:
+      scm:
+        - jenkins-pipelines
+      script-path: 'Jenkinsfiles/Jenkinsfile-{name}.groovy'
+      lightweight-checkout: true
+
+# Push image job
+- job-template:
+    name: '{name}-push-image'
+    project-type: pipeline
+    sandbox: true
+    pipeline-scm:
+      scm:
+        - jenkins-pipelines
+      script-path: 'Jenkinsfiles/Jenkinsfile-auto-push-image.groovy'
+      lightweight-checkout: true
+
+# Conformance job
+- job-template:
+    name: '{name}-{setup}-conformance'
+    project-type: pipeline
+    sandbox: true
+    pipeline-scm:
+      scm:
+        - jenkins-pipelines
+      script-path: 'Jenkinsfiles/Jenkinsfile-auto-conformance.groovy'
+      lightweight-checkout: true
+
+# Detect new builds on OBS
+- project:
+    name: detect-new-builds
+    jobs:
+      - '{name}'
+
+# Hyper-V
+- project:
+    name: hyperv
+    jobs:
+      - '{name}-push-image'
+      - '{name}-{setup}-conformance':
+          setup: 1m2w
+      - '{name}-{setup}-conformance':
+          setup: 3m2w
+
+# VMware
+- project:
+    name: vmware
+    jobs:
+      - '{name}-push-image'
+      - '{name}-{setup}-conformance':
+          setup: 1m2w
+      - '{name}-{setup}-conformance':
+          setup: 3m2w
