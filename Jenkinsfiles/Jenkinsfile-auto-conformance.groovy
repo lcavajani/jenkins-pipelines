@@ -3,7 +3,7 @@ properties([
     buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
     //disableConcurrentBuilds(),
     parameters([
-        string(name: 'IMAGE', defaultValue: 'SUSE-CaaS-Platform-3.0-for-MS-HyperV.x86_64-3.0.0-GM', description: "CaaSP image"),
+        string(name: 'IMAGE', defaultValue: '', description: "CaaSP image"),
         string(name: 'IMAGE_URL', defaultValue: '', description: "CaaSP image URL"),
 
         string(name: 'ADMIN_RAM', defaultValue: '', description: 'Memory of admin node'),
