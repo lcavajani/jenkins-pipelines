@@ -1,12 +1,10 @@
-def PLATFORM = currentBuild.projectName.split('-')[0]
-
 // Configure the build properties
 properties([
     buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
     //disableConcurrentBuilds(),
     parameters([
-        string(name: 'IMAGE', defaultValue: 'SUSE-CaaS-Platform-3.0-for-MS-HyperV.x86_64-3.0.0-GM', description: "CaaSP ${PLATFORM} image"),
-        string(name: 'IMAGE_URL', defaultValue: '', description: "CaaSP ${PLATFORM} image URL"),
+        string(name: 'IMAGE', defaultValue: 'SUSE-CaaS-Platform-3.0-for-MS-HyperV.x86_64-3.0.0-GM', description: "CaaSP image"),
+        string(name: 'IMAGE_URL', defaultValue: '', description: "CaaSP image URL"),
 
         string(name: 'ADMIN_RAM', defaultValue: '', description: 'Memory of admin node'),
         string(name: 'ADMIN_CPU', defaultValue: '', description: 'vCPU of admin node'),
@@ -19,8 +17,8 @@ properties([
         string(name: 'WORKER_RAM', defaultValue: '', description: 'Memory of worker nodes'),
         string(name: 'WORKER_CPU', defaultValue: '', description: 'vCPU of worker nodes'),
 
-        string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: "Endpoint ${PLATFORM} to connect to"),
-        string(name: 'CREDENTIALS_ID', defaultValue: '', description: "Jenkins ${PLATFORM} credentials ID"),
+        string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: "Endpoint to connect to"),
+        string(name: 'CREDENTIALS_ID', defaultValue: '', description: "Jenkins credentials ID"),
 
         booleanParam(name: 'CHOOSE_CRIO', defaultValue: false, description: 'Use crio as container engine ?'),
         booleanParam(name: 'ENVIRONMENT_DESTROY', defaultValue: true, description: 'Destroy env once done ? if false, manual action is required'),
@@ -34,9 +32,12 @@ node {
     checkout scm
 
     def common = load("./Jenkinsfiles/methods/common.groovy")
+
+    def PLATFORM = common.getPlatformFromJobName(currentBuild)
+    def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")
+
     def defaultJobParametersMap = common.readDefaultJobParameters()
     def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
-    def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")
 
     // workaround to get/initialize the parameters available in the job
     if (currentBuild.number == 1) {

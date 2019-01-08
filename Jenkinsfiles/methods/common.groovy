@@ -18,6 +18,11 @@ def configureEnvironment(Map jobParams) {
     task(jobParams)
 }
 
+def getPlatformFromJobName(currentBuild) {
+    def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/getPlatformFromJobName.groovy")
+    task(currentBuild)
+}
+
 def readDefaultJobParameters() {
     def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/readDefaultJobParameters.groovy")
     task()

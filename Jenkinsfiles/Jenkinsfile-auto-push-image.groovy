@@ -1,4 +1,3 @@
-def PLATFORM = currentBuild.projectName.split('-')[0]
 
 // Configure the build properties
 properties([
@@ -20,6 +19,10 @@ node {
     checkout scm
 
     def common = load("./Jenkinsfiles/methods/common.groovy")
+
+    def PLATFORM = common.getPlatformFromJobName(currentBuild)
+    def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")
+
     def defaultJobParametersMap = common.readDefaultJobParameters()
     def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
     jobParametersMap.jobsCiFile = 'test-images.yaml'
