@@ -4,11 +4,11 @@ properties([
     buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
     disableConcurrentBuilds(),
     parameters([
-        string(name: 'IMAGE', description: "CaaSP ${PLATFORM} Image To Use"),
-        string(name: 'IMAGE_URL', description: "CaaSP ${PLATFORM} Image URL"),
+        string(name: 'IMAGE', description: "CaaSP Image To Use"),
+        string(name: 'IMAGE_URL', description: "CaaSP Image URL"),
 
-        string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: "Endpoint ${PLATFORM} to connect to"),
-        string(name: 'CREDENTIALS_ID', defaultValue: '', description: "Jenkins ${PLATFORM} credentials ID"),
+        string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: "Endpoint to connect to"),
+        string(name: 'CREDENTIALS_ID', defaultValue: '', description: "Jenkins credentials ID"),
 
         booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')
     ])
