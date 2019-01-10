@@ -3,7 +3,7 @@ def call(Map jobParams, Map defaultParams) {
         withCredentials([usernamePassword(credentialsId: defaultParams.jenkins.credentials_id, usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {
             jenkinsCrumb = sh(returnStdout: true, script: "curl -u \"${JENKINS_USER}:${JENKINS_PASSWORD}\" '${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'")
 
-            def dryRunMode = (jobParams.triggerJobDryRun) ? '--dry-run' : ''
+            def dryRunModeParam = (jobParams.triggerJobDryRun) ? '--dry-run' : ''
             def imageUrlParam = (jobParams.imageSourceUrl) ? "--image-url ${jobParams.imageSourceUrl}" : ''
 
             if (jobParams.triggerJobMode == 'auto') {
@@ -12,7 +12,7 @@ def call(Map jobParams, Map defaultParams) {
 
                 sh(script: "export JENKINS_CRUMB=${jenkinsCrumb};./trigger_jenkins_jobs.py --git-directory ${resultsDir} --images-file ${resultsFile} --ci-jobfile ${jobParams.jobsCiFile} --auto ${dryRunMode}")
             } else {
-                sh(script: "export JENKINS_CRUMB=${jenkinsCrumb};./trigger_jenkins_jobs.py --ci-jobfile ${jobParams.jobsCiFile} --platform ${jobParams.platform} --image ${jobParams.image} ${imageUrlParam} ${dryRunMode}") 
+                sh(script: "export JENKINS_CRUMB=${jenkinsCrumb};./trigger_jenkins_jobs.py --ci-jobfile ${jobParams.jobsCiFile} --platform ${jobParams.platform} --image ${jobParams.image} ${imageUrlParam} ${dryRunModeParam}") 
             }
         }
     }

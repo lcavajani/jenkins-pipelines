@@ -10,6 +10,8 @@ properties([
         string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: "Endpoint to connect to"),
         string(name: 'CREDENTIALS_ID', defaultValue: '', description: "Jenkins credentials ID"),
 
+        string(name: 'DRY_RUN', defaultValue: false, description: 'Use dry-run mode when launching the jobs'),
+
         booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')
     ])
 ])

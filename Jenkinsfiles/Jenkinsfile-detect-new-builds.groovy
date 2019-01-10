@@ -5,7 +5,9 @@ properties([
     parameters([
         string(name: 'IMAGES_REPO', defaultValue: 'http://download.suse.de/ibs/Devel:/CASP:/Head:/ControllerNode/images-sle15/', description: 'URL of the image download repository'),
         //string(name: 'RESULTS_REPO', defaultValue: 'gitlab@gitlab.suse.de:lcavajani/caasp-builds.git', description: 'Git repository to store the results of availabe builds')
-        string(name: 'RESULTS_REPO', defaultValue: 'git@github.com:lcavajani/caasp-builds.git', description: 'Git repository to store the results of availabe builds')
+        string(name: 'RESULTS_REPO', defaultValue: 'git@github.com:lcavajani/caasp-builds.git', description: 'Git repository to store the results of availabe builds'),
+        booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Use dry-run mode when launching the jobs'),
+        booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')
     ])
 ])
 
@@ -16,6 +18,8 @@ def jobParametersMap = [
     resultsGitRepo: params.get('RESULTS_REPO'),
     jobsCiFile: 'push-images.yaml',
     triggerJobMode: 'auto',
+    triggerJobDryRun: params.get('DRY_RUN'),
+    workspaceCleanup: params.get('WORKSPACE_CLEANUP'),
     // TODO: change
     branchName: 'master'
 ]
@@ -61,4 +65,12 @@ node {
     //        sh(script: "git add & commit")
     //    }
     //}
+
+    stage('Workspace cleanup') {
+        if (jobParametersMap.workspaceCleanup) {
+            common.workspaceCleanup()
+        } else {
+            echo "Skipping Cleanup as request was made to NOT cleanup the workspace"
+        }
+    }
 }
