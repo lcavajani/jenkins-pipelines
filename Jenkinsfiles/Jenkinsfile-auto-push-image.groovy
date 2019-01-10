@@ -39,7 +39,7 @@ node {
         }
 
         stage('set up workspace') {
-            common.setUpWorkspace()
+            common.setUpWorkspace(jobParametersMap)
         }
 
         stage('clone Kubic repos') {

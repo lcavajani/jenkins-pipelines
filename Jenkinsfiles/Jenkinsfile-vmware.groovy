@@ -43,14 +43,6 @@ node {
 
         stage('set up workspace') {
             common.setUpWorkspace()
-
-            // SPECIFIC, should be changed when merged
-            sh(script: "mkdir -p ${WORKSPACE}/caasp-vmware")
-            dir("caasp-vmware") {
-                checkout([$class: 'GitSCM', branches: [[name: "*/master"]],
-                userRemoteConfigs: [[url: ('https://github.com/lcavajani/caasp-vmware.git')]], extensions: [[$class: 'CleanCheckout']]])
-            }
-            sh(script: "cp -Rf ${WORKSPACE}/caasp-vmware ${WORKSPACE}/automation/")
         }
 
         stage('clone Kubic repos') {

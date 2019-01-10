@@ -3,9 +3,9 @@ def nodeInfo() {
     task()
 }
 
-def setUpWorkspace() {
+def setUpWorkspace(jobParametersMap) {
     def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/setUpWorkspace.groovy")
-    task()
+    task(jobParametersMap)
 }
 
 def cloneKubicRepos(Map jobParams) {
