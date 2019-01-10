@@ -20,7 +20,7 @@ default:
   master_ram: "4096"
   master_cpu: "2"
   worker_count: "2"
-  worker_ram: "2018"
+  worker_ram: "2048"
   worker_cpu: "1"
   choose_crio: false
   environment_destroy: true
