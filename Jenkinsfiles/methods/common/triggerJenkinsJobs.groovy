@@ -10,7 +10,7 @@ def call(Map jobParams, Map defaultParams) {
                 def resultsDir = "${WORKSPACE}/${defaultParams.available_builds.results_dir}"
                 def resultsFile = "${resultsDir}/${defaultParams.available_builds.results_file}"
 
-                sh(script: "export JENKINS_CRUMB=${jenkinsCrumb};./trigger_jenkins_jobs.py --git-directory ${resultsDir} --images-file ${resultsFile} --ci-jobfile ${jobParams.jobsCiFile} --auto ${dryRunMode}")
+                sh(script: "export JENKINS_CRUMB=${jenkinsCrumb};./trigger_jenkins_jobs.py --git-directory ${resultsDir} --images-file ${resultsFile} --ci-jobfile ${jobParams.jobsCiFile} --auto ${dryRunModeParam}")
             } else {
                 sh(script: "export JENKINS_CRUMB=${jenkinsCrumb};./trigger_jenkins_jobs.py --ci-jobfile ${jobParams.jobsCiFile} --platform ${jobParams.platform} --image ${jobParams.image} ${imageUrlParam} ${dryRunModeParam}") 
             }
