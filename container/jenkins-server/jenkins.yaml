@@ -1,0 +1,64 @@
+jenkins:
+  systemMessage: "Jenkins QA-CAASP"
+  numExecutors: 0
+
+  clouds:
+    - docker:
+        name: "docker"
+        dockerApi:
+          dockerHost:
+            uri: "unix:///var/run/docker.sock"
+        templates:
+          - labelString: "docker-common"
+            dockerTemplateBase:
+              image: "jenkins-slave-common:latest"
+              environmentsString: |
+                JENKINS_SLAVE_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfr3WcdqTLh1tqyG8yt3rJSmN8Dts6KZoklA+4dk5E0D4BtmlG/A+W1BV+43fsoQO/loBrJyWqKsMvVcv2EV1rKEx9FrzX7RVrEK4VNzm5wyK114RpLUvmOxvNI2EoecwY+r3rjExLk3khcN3ZtLdGOvW7ZqDguGITg2ERU6S29uZZcYMd5ghZTyosF6EBiL0wGN8cs5iv26qfZdPzMCQu3HBL36jO2yqFOZiTO9YSY+dUaUnxhuAjo38HGaCp6POMIEd0xaupna7lZab5b9CtaOtcd7O3x7JfIBqkmbQZNt79SYS15ZZ8yDae29V0UDya6vWXXZAcokTxALfQ9Z43
+            pullStrategy: "PULL_NEVER"
+            remoteFs: "/home/jenkins/"
+            connector:
+              attach:
+                user: "jenkins"
+            instanceCapStr: "10"
+          - labelString: "docker-vmware"
+            dockerTemplateBase:
+              image: "jenkins-slave-vmware:latest"
+              environmentsString: |
+                JENKINS_SLAVE_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfr3WcdqTLh1tqyG8yt3rJSmN8Dts6KZoklA+4dk5E0D4BtmlG/A+W1BV+43fsoQO/loBrJyWqKsMvVcv2EV1rKEx9FrzX7RVrEK4VNzm5wyK114RpLUvmOxvNI2EoecwY+r3rjExLk3khcN3ZtLdGOvW7ZqDguGITg2ERU6S29uZZcYMd5ghZTyosF6EBiL0wGN8cs5iv26qfZdPzMCQu3HBL36jO2yqFOZiTO9YSY+dUaUnxhuAjo38HGaCp6POMIEd0xaupna7lZab5b9CtaOtcd7O3x7JfIBqkmbQZNt79SYS15ZZ8yDae29V0UDya6vWXXZAcokTxALfQ9Z43
+            pullStrategy: "PULL_NEVER"
+            remoteFs: "/home/jenkins/"
+            connector:
+              attach:
+                user: "jenkins"
+            instanceCapStr: "5"
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+        - usernamePassword:
+              scope: GLOBAL
+              id: "hvcore-ssh"
+              username: ${hyperv-user}
+              password: ${hyperv-password}
+              description: "Username/Password Credentials for Hyper-V cluster in Provo"
+        - usernamePassword:
+              scope: GLOBAL
+              id: "vcenter-api"
+              username: ${vmware-user}
+              password: ${vmware-password}
+              description: "Username/Password Credentials for VMware cluster in Provo"
+        - usernamePassword:
+              scope: GLOBAL
+              id: "jenkins-api"
+              username: ${jenkins-user}
+              password: ${jenkins-password}
+              description: "Username/Password Credentials for Jenkins API"
+        - basicSSHUserPrivateKey:
+            scope: GLOBAL
+            id: "jenkins-ssh"
+            username: "jenkins"
+            description: "SSH Credentials for jenkins to connect to the slaves"
+            privateKeySource:
+              directEntry:
+                privateKey: ${jenkins-ssh-private-key}
