@@ -11,7 +11,7 @@ jenkins:
 
 git:
 #  credentials_id: "jenkins-gitlab-github"
-  credentials_id: "jenkins-gitlab"
+  credentials_id: "jenkins-ssh"
 
 default:
   admin_ram: "8192"
