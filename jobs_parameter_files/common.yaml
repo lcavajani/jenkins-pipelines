@@ -10,7 +10,6 @@ jenkins:
   credentials_id: "jenkins-api"
 
 git:
-#  credentials_id: "jenkins-gitlab-github"
   credentials_id: "jenkins-ssh"
 
 default:
@@ -25,6 +24,8 @@ default:
   choose_crio: false
   environment_destroy: true
   workspace_cleanup: true
+
+  jobs_parameter_files_dir: "jobs_parameter_files"
 
 available_builds:
   results_dir: "caasp-builds"

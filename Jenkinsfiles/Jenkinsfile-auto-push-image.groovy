@@ -10,6 +10,7 @@ properties([
         string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: "Endpoint to connect to"),
         string(name: 'CREDENTIALS_ID', defaultValue: '', description: "Jenkins credentials ID"),
 
+        string(name: 'JOB_CI_FILE', defaultValue: 'auto-push-image_trigger-jobs.yaml', description: 'CI configuration file for trigger_jenkins_jobs script'),
         booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Use dry-run mode when launching the jobs'),
 
         booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')
@@ -27,8 +28,11 @@ node {
 
     def defaultJobParametersMap = common.readDefaultJobParameters()
     def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
-    jobParametersMap.jobsCiFile = 'test-images.yaml'
-    jobParametersMap.triggerJobDryRun = true
+
+    jobParametersMap = [
+        jobsCiFile: params.get('JOB_CI_FILE'),
+        triggerJobDryRun: params.get('DRY_RUN')
+    ]
 
     // workaround to get/initialize the parameters available in the job
     if (currentBuild.number == 1) {

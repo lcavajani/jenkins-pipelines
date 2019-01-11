@@ -5,6 +5,7 @@ def call(Map jobParams, Map defaultParams) {
 
             def dryRunModeParam = (jobParams.triggerJobDryRun) ? '--dry-run' : ''
             def imageUrlParam = (jobParams.imageSourceUrl) ? "--image-url ${jobParams.imageSourceUrl}" : ''
+            jobParams.jobsCiFile = "${WORKSPACE}/${defaultParams.default.jobs_parameter_files_dir}/${jobParams.jobsCiFile}"
 
             if (jobParams.triggerJobMode == 'auto') {
                 def resultsDir = "${WORKSPACE}/${defaultParams.available_builds.results_dir}"

@@ -1,5 +1,5 @@
 def call() {
-    def paramsFile = './Jenkinsfiles/job_parameters.yaml'
+    def paramsFile = './jobs_parameter_files/common.yaml'
     def defaultJobParametersMap = readYaml file: paramsFile
 
     println "INFO: default parameters from ${paramsFile}"
