@@ -1,14 +1,16 @@
+// Get platform from job name
+def PLATFORM = currentBuild.projectName.split('-')[0]
 
 // Configure the build properties
 properties([
     buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
     disableConcurrentBuilds(),
     parameters([
-        string(name: 'IMAGE', description: "CaaSP Image To Use"),
-        string(name: 'IMAGE_URL', description: "CaaSP Image URL"),
+        string(name: 'IMAGE', description: 'CaaSP Image To Use'),
+        string(name: 'IMAGE_URL', description: 'CaaSP Image URL'),
 
-        string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: "Endpoint to connect to"),
-        string(name: 'CREDENTIALS_ID', defaultValue: '', description: "Jenkins credentials ID"),
+        string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: 'Endpoint to connect to'),
+        string(name: 'CREDENTIALS_ID', defaultValue: '', description: 'Jenkins credentials ID'),
 
         string(name: 'JOB_CI_FILE', defaultValue: 'auto-push-image_trigger-jobs.yaml', description: 'CI configuration file for trigger_jenkins_jobs script'),
         booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Use dry-run mode when launching the jobs'),
@@ -21,9 +23,12 @@ properties([
 node {
     checkout scm
 
-    def common = load("./Jenkinsfiles/methods/common.groovy")
+    // workaround to get/initialize the parameters available in the job
+    if (currentBuild.number == 1) {
+        return
+    }
 
-    def PLATFORM = common.getPlatformFromJobName(currentBuild)
+    def common = load('./Jenkinsfiles/methods/common.groovy')
     def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")
 
     def defaultJobParametersMap = common.readDefaultJobParameters()
@@ -33,11 +38,6 @@ node {
         jobsCiFile: params.get('JOB_CI_FILE'),
         triggerJobDryRun: params.get('DRY_RUN')
     ]
-
-    // workaround to get/initialize the parameters available in the job
-    if (currentBuild.number == 1) {
-        return
-    }
 
     stage('preparation') {
         stage('node Info') {
