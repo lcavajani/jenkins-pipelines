@@ -3,7 +3,6 @@ version: '3.4'
 services:
   jenkins-server:
     build: ./
-    image: jenkins-with-plugins:latest
     container_name: jenkins-server
     environment:
       - JENKINS_URL=http://10.84.152.30:8080
