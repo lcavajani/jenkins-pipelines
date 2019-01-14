@@ -10,7 +10,7 @@ jenkins:
             uri: "unix:///var/run/docker.sock"
         templates:
           # Default docker slave
-          - labelString: "docker-slave-default"
+          - labelString: "docker-default"
             dockerTemplateBase:
               image: "jenkins-slave/default:stable"
             pullStrategy: "PULL_NEVER"
@@ -21,7 +21,7 @@ jenkins:
             mode: NORMAL
             instanceCapStr: "10"
           # Hyper-V
-          - labelString: "docker-slave-hyperv"
+          - labelString: "docker-hyperv"
             dockerTemplateBase:
               image: "jenkins-slave/default:stable"
             pullStrategy: "PULL_NEVER"
@@ -32,7 +32,7 @@ jenkins:
             mode: EXCLUSIVE
             instanceCapStr: "5"
           # VMware
-          - labelString: "docker-slave-vmware"
+          - labelString: "docker-vmware"
             dockerTemplateBase:
               image: "jenkins-slave/vmware:stable"
             pullStrategy: "PULL_NEVER"
