@@ -1,4 +1,4 @@
-FROM jenkins-slave-common:latest
+FROM jenkins-slave-default:latest
 
 ARG pyvomi_version=6.7.0.2018.9
 

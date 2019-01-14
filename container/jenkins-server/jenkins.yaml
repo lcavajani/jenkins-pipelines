@@ -9,27 +9,38 @@ jenkins:
           dockerHost:
             uri: "unix:///var/run/docker.sock"
         templates:
-          - labelString: "docker-common"
+          # Default docker slave
+          - labelString: "docker-slave-default"
             dockerTemplateBase:
-              image: "jenkins-slave-common:latest"
-              environmentsString: |
-                JENKINS_SLAVE_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfr3WcdqTLh1tqyG8yt3rJSmN8Dts6KZoklA+4dk5E0D4BtmlG/A+W1BV+43fsoQO/loBrJyWqKsMvVcv2EV1rKEx9FrzX7RVrEK4VNzm5wyK114RpLUvmOxvNI2EoecwY+r3rjExLk3khcN3ZtLdGOvW7ZqDguGITg2ERU6S29uZZcYMd5ghZTyosF6EBiL0wGN8cs5iv26qfZdPzMCQu3HBL36jO2yqFOZiTO9YSY+dUaUnxhuAjo38HGaCp6POMIEd0xaupna7lZab5b9CtaOtcd7O3x7JfIBqkmbQZNt79SYS15ZZ8yDae29V0UDya6vWXXZAcokTxALfQ9Z43
+              image: "jenkins-slave-default:stable"
             pullStrategy: "PULL_NEVER"
             remoteFs: "/home/jenkins/"
             connector:
               attach:
                 user: "jenkins"
+            mode: NORMAL
             instanceCapStr: "10"
-          - labelString: "docker-vmware"
+          # Hyper-V
+          - labelString: "docker-slave-hyperv"
             dockerTemplateBase:
-              image: "jenkins-slave-vmware:latest"
-              environmentsString: |
-                JENKINS_SLAVE_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfr3WcdqTLh1tqyG8yt3rJSmN8Dts6KZoklA+4dk5E0D4BtmlG/A+W1BV+43fsoQO/loBrJyWqKsMvVcv2EV1rKEx9FrzX7RVrEK4VNzm5wyK114RpLUvmOxvNI2EoecwY+r3rjExLk3khcN3ZtLdGOvW7ZqDguGITg2ERU6S29uZZcYMd5ghZTyosF6EBiL0wGN8cs5iv26qfZdPzMCQu3HBL36jO2yqFOZiTO9YSY+dUaUnxhuAjo38HGaCp6POMIEd0xaupna7lZab5b9CtaOtcd7O3x7JfIBqkmbQZNt79SYS15ZZ8yDae29V0UDya6vWXXZAcokTxALfQ9Z43
+              image: "jenkins-slave-default:stable"
             pullStrategy: "PULL_NEVER"
             remoteFs: "/home/jenkins/"
             connector:
               attach:
                 user: "jenkins"
+            mode: EXCLUSIVE
+            instanceCapStr: "5"
+          # VMware
+          - labelString: "docker-slave-vmware"
+            dockerTemplateBase:
+              image: "jenkins-slave-vmware:stable"
+            pullStrategy: "PULL_NEVER"
+            remoteFs: "/home/jenkins/"
+            connector:
+              attach:
+                user: "jenkins"
+            mode: EXCLUSIVE
             instanceCapStr: "5"
 
 credentials:
