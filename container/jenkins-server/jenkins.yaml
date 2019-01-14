@@ -12,7 +12,7 @@ jenkins:
           # Default docker slave
           - labelString: "docker-slave-default"
             dockerTemplateBase:
-              image: "jenkins-slave-default:stable"
+              image: "jenkins-slave/default:stable"
             pullStrategy: "PULL_NEVER"
             remoteFs: "/home/jenkins/"
             connector:
@@ -23,7 +23,7 @@ jenkins:
           # Hyper-V
           - labelString: "docker-slave-hyperv"
             dockerTemplateBase:
-              image: "jenkins-slave-default:stable"
+              image: "jenkins-slave/default:stable"
             pullStrategy: "PULL_NEVER"
             remoteFs: "/home/jenkins/"
             connector:
@@ -34,7 +34,7 @@ jenkins:
           # VMware
           - labelString: "docker-slave-vmware"
             dockerTemplateBase:
-              image: "jenkins-slave-vmware:stable"
+              image: "jenkins-slave/vmware:stable"
             pullStrategy: "PULL_NEVER"
             remoteFs: "/home/jenkins/"
             connector:

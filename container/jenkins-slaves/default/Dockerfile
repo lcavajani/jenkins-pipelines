@@ -1,4 +1,4 @@
-FROM jenkins-slave-base:latest
+FROM jenkins-slave/base:stable
 
 ARG terraform_version=0.11.1
 
