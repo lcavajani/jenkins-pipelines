@@ -34,7 +34,7 @@ node("docker-${PLATFORM}") {
     def defaultJobParametersMap = common.readDefaultJobParameters()
     def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
 
-    jobParametersMap = [
+    jobParametersMap << [
         jobsCiFile: params.get('JOB_CI_FILE'),
         triggerJobDryRun: params.get('DRY_RUN')
     ]
