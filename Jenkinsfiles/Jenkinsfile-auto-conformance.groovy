@@ -31,7 +31,7 @@ properties([
 
 //TODO remove all zypper steps, pssh, velum-interactions
 
-node {
+node("docker-${PLATFORM}") {
     checkout scm
 
     // workaround to get/initialize the parameters available in the job
