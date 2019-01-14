@@ -23,6 +23,10 @@ properties([
         string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: 'Endpoint to connect to'),
         string(name: 'CREDENTIALS_ID', defaultValue: '', description: 'Jenkins credentials ID'),
 
+        string(name: 'ADMIN_FLAVOR', defaultValue: '', description: 'OpenStack admin flavor'),
+        string(name: 'MASTER_FLAVOR', defaultValue: '', description: 'OpenStack master flavor'),
+        string(name: 'WORKER_FLAVOR', defaultValue: '', description: 'OpenStack worker flavor'),
+
         booleanParam(name: 'CHOOSE_CRIO', defaultValue: false, description: 'Use crio as container engine ?'),
         booleanParam(name: 'ENVIRONMENT_DESTROY', defaultValue: true, description: 'Destroy env once done ? if false, manual action is required'),
         booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')

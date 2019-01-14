@@ -42,6 +42,17 @@ jenkins:
                 user: "jenkins"
             mode: EXCLUSIVE
             instanceCapStr: "5"
+          # OpenStack
+          - labelString: "docker-openstack"
+            dockerTemplateBase:
+              image: "jenkins-slave/openstack:stable"
+            pullStrategy: "PULL_NEVER"
+            remoteFs: "/home/jenkins/"
+            connector:
+              attach:
+                user: "jenkins"
+            mode: EXCLUSIVE
+            instanceCapStr: "5"
 
 credentials:
   system:
@@ -53,6 +64,11 @@ credentials:
               username: ${hyperv-user}
               password: ${hyperv-password}
               description: "Username/Password Credentials for Hyper-V cluster in Provo"
+        - file:
+              scope: GLOBAL
+              id: "ecp-openrc"
+              fileName: ${openstack-openrc}
+              description: "Username/Password Credentials for Engineering Cloud in Provo"
         - usernamePassword:
               scope: GLOBAL
               id: "vcenter-api"

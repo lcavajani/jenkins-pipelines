@@ -2,6 +2,12 @@ hyperv:
   platform_endpoint: "10.84.149.23"
   credentials_id: "hvcore-ssh"
 
+openstack:
+  platform_endpoint: "https://engcloud.prv.suse.net:5000/v3"
+  credentials_id: "ecp-openrc"
+  internal_net: "lcavajani-net"
+  external_net: "floating"
+
 vmware:
   platform_endpoint: "jazz.qa.prv.suse.net"
   credentials_id: "vcenter-api"
@@ -15,12 +21,15 @@ git:
 default:
   admin_ram: "8192"
   admin_cpu: "4"
+  admin_flavor: "m1.large"
   master_count: "1"
   master_ram: "4096"
   master_cpu: "2"
+  master_flavor: "m1.medium"
   worker_count: "2"
   worker_ram: "2048"
   worker_cpu: "1"
+  worker_flavor: "m1.medium"
   choose_crio: false
   environment_destroy: true
   workspace_cleanup: true

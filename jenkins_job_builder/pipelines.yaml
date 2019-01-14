@@ -65,3 +65,13 @@
           setup: 1m2w
       - '{name}-{setup}-conformance':
           setup: 3m2w
+
+# OpenStack
+- project:
+    name: openstack
+    jobs:
+      - '{name}-push-image'
+      - '{name}-{setup}-conformance':
+          setup: 1m2w
+      - '{name}-{setup}-conformance':
+          setup: 3m2w

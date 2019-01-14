@@ -18,6 +18,7 @@ services:
       - hyperv-password
       - jenkins-user
       - jenkins-password
+      - openstack-openrc
       - vmware-user
       - vmware-password
       - jenkins-ssh-private-key
@@ -27,6 +28,8 @@ secrets:
     file: ./secrets/hyperv-user
   hyperv-password:
     file: ./secrets/hyperv-password
+  openstack-openrc:
+    file: ./secrets/openstack-openrc
   jenkins-user:
     file: ./secrets/jenkins-user
   jenkins-password:
