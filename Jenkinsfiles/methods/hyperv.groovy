@@ -1,16 +1,16 @@
-def pushImage(Map conf) {
+def pushImage(Map jobParams) {
     timeout(120) {
-        withCredentials([usernamePassword(credentialsId: conf.credentialsId, usernameVariable: 'SSHUSER', passwordVariable: 'SSHPASS')]) {
-            sh(script: "set -o pipefail; sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \"${SSHUSER}\"@${conf.platformEndpoint} 'Get-ChildItem Env:;git checkout ${BRANCH_NAME}; git pull; caasp-hyperv.ps1 fetchimage -caaspImageSourceUrl ${conf.imageSourceUrl} -nochecksum' 2>&1 | tee ${WORKSPACE}/logs/caasp-hyperv.log")
+        withCredentials([usernamePassword(credentialsId: jobParams.credentialsId, usernameVariable: 'SSHUSER', passwordVariable: 'SSHPASS')]) {
+            sh(script: "set -o pipefail; sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \"${SSHUSER}\"@${jobParams.platformEndpoint} 'Get-ChildItem Env:;git checkout ${BRANCH_NAME}; git pull; caasp-hyperv.ps1 fetchimage -caaspImageSourceUrl ${jobParams.imageSourceUrl} -nochecksum' 2>&1 | tee ${WORKSPACE}/logs/caasp-hyperv.log")
         }
     }
 }
 
-def createEnvironment(Map conf) {
+def createEnvironment(Map jobParams) {
     timeout(120) {
         // https://github.com/PowerShell/Win32-OpenSSH/issues/1049 -> Use SSH password
-        withCredentials([usernamePassword(credentialsId: conf.credentialsId, usernameVariable: 'SSHUSER', passwordVariable: 'SSHPASS')]) {
-            sh(script: "set -o pipefail; sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \"${SSHUSER}\"@${conf.platformEndpoint} 'Get-ChildItem Env:; git checkout ${conf.branchName}; git pull; caasp-hyperv.ps1 deploy -caaspImage ${conf.image} -stackName ${conf.stackName} -adminRam ${conf.adminRam} -adminCpu ${conf.adminCpu} -masters ${conf.masterCount} -masterRam ${conf.masterRam} -masterCpu ${conf.masterCpu} -workers ${conf.workerCount} -workerRam ${conf.workerRam} -workerCpu ${conf.workerCpu} -Force' 2>&1 | tee ${WORKSPACE}/logs/caasp-hyperv.log")
+        withCredentials([usernamePassword(credentialsId: jobParams.credentialsId, usernameVariable: 'SSHUSER', passwordVariable: 'SSHPASS')]) {
+            sh(script: "set -o pipefail; sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \"${SSHUSER}\"@${jobParams.platformEndpoint} 'Get-ChildItem Env:; git checkout ${jobParams.branchName}; git pull; caasp-hyperv.ps1 deploy -caaspImage ${jobParams.image} -stackName ${jobParams.stackName} -adminRam ${jobParams.adminRam} -adminCpu ${jobParams.adminCpu} -masters ${jobParams.masterCount} -masterRam ${jobParams.masterRam} -masterCpu ${jobParams.masterCpu} -workers ${jobParams.workerCount} -workerRam ${jobParams.workerRam} -workerCpu ${jobParams.workerCpu} -Force' 2>&1 | tee ${WORKSPACE}/logs/caasp-hyperv.log")
         }
 
         // Extract state from log file and generate environment.json
@@ -26,10 +26,10 @@ def createEnvironment(Map conf) {
     }
 }
 
-def destroyEnvironment(Map conf) {
+def destroyEnvironment(Map jobParams) {
     timeout(30) {
-        withCredentials([usernamePassword(credentialsId: conf.credentialsId, usernameVariable: 'SSHUSER', passwordVariable: 'SSHPASS')]) {
-            sh(script: "set -o pipefail; sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \"${SSHUSER}\"@${conf.platformEndpoint} 'Get-ChildItem Env:; git checkout ${conf.branchName}; git pull; caasp-hyperv.ps1 destroy -caaspImage ${conf.image} -stackName ${conf.stackName} -masters ${conf.masterCount} -workers ${conf.workerCount} -Force' 2>&1 | tee ${WORKSPACE}/logs/caasp-hyperv.log")
+        withCredentials([usernamePassword(credentialsId: jobParams.credentialsId, usernameVariable: 'SSHUSER', passwordVariable: 'SSHPASS')]) {
+            sh(script: "set -o pipefail; sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \"${SSHUSER}\"@${jobParams.platformEndpoint} 'Get-ChildItem Env:; git checkout ${jobParams.branchName}; git pull; caasp-hyperv.ps1 destroy -caaspImage ${jobParams.image} -stackName ${jobParams.stackName} -masters ${jobParams.masterCount} -workers ${jobParams.workerCount} -Force' 2>&1 | tee ${WORKSPACE}/logs/caasp-hyperv.log")
         }
     }
 }

@@ -1,12 +1,12 @@
-def pushImage(Map conf) {
+def pushImage(Map jobParams) {
     dir("caasp-vmware") {
         timeout(120) {
-            withCredentials([usernamePassword(credentialsId: conf.credentialsId, usernameVariable: 'VC_USERNAME', passwordVariable: 'VC_PASSWORD')]) {
+            withCredentials([usernamePassword(credentialsId: jobParams.credentialsId, usernameVariable: 'VC_USERNAME', passwordVariable: 'VC_PASSWORD')]) {
                 try {
-                    sh(script: "set -o pipefail; curl -OL ${conf.imageSourceUrl} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
-                    sh(script: "set -o pipefail; export VC_HOST=${conf.platformEndpoint}; python3 ./caasp-vmware.py pushimages --source-media ${conf.image} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
+                    sh(script: "set -o pipefail; curl -OL ${jobParams.imageSourceUrl} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
+                    sh(script: "set -o pipefail; export VC_HOST=${jobParams.platformEndpoint}; python3 ./caasp-vmware.py pushimages --source-media ${jobParams.image} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
                 } finally {
-                    sh(script: "set -o pipefail; rm -vf ${conf.image} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
+                    sh(script: "set -o pipefail; rm -vf ${jobParams.image} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
                 }
             }
         }
@@ -14,11 +14,11 @@ def pushImage(Map conf) {
 }
 
 
-def createEnvironment(Map conf) {
+def createEnvironment(Map jobParams) {
     dir("caasp-vmware") {
         timeout(120) {
-            withCredentials([usernamePassword(credentialsId: conf.credentialsId, usernameVariable: 'VC_USERNAME', passwordVariable: 'VC_PASSWORD')]) {
-                sh(script: "set -o pipefail; export VC_HOST=${conf.platformEndpoint}; python3 ./caasp-vmware.py deploy --media ${conf.image} --stack-name ${conf.stackName} --admin-ram ${conf.adminRam} --admin-cpu ${conf.adminCpu} --master-count ${conf.masterCount} --master-ram ${conf.masterRam} --master-cpu ${conf.masterCpu} --worker-count ${conf.workerCount} --worker-ram ${conf.workerRam} --worker-cpu ${conf.workerCpu} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
+            withCredentials([usernamePassword(credentialsId: jobParams.credentialsId, usernameVariable: 'VC_USERNAME', passwordVariable: 'VC_PASSWORD')]) {
+                sh(script: "set -o pipefail; export VC_HOST=${jobParams.platformEndpoint}; python3 ./caasp-vmware.py deploy --media ${jobParams.image} --stack-name ${jobParams.stackName} --admin-ram ${jobParams.adminRam} --admin-cpu ${jobParams.adminCpu} --master-count ${jobParams.masterCount} --master-ram ${jobParams.masterRam} --master-cpu ${jobParams.masterCpu} --worker-count ${jobParams.workerCount} --worker-ram ${jobParams.workerRam} --worker-cpu ${jobParams.workerCpu} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
             }
         }
     
@@ -32,10 +32,10 @@ def createEnvironment(Map conf) {
     archiveArtifacts(artifacts: 'environment.json', fingerprint: true)
 }
 
-def destroyEnvironment(Map conf) {
+def destroyEnvironment(Map jobParams) {
     dir("caasp-vmware") {
-        withCredentials([usernamePassword(credentialsId: conf.credentialsId, usernameVariable: 'VC_USERNAME', passwordVariable: 'VC_PASSWORD')]) {
-            sh(script: "set -o pipefail; export VC_HOST=${conf.platformEndpoint}; python3 ./caasp-vmware.py destroy --stack-name ${conf.stackName} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
+        withCredentials([usernamePassword(credentialsId: jobParams.credentialsId, usernameVariable: 'VC_USERNAME', passwordVariable: 'VC_PASSWORD')]) {
+            sh(script: "set -o pipefail; export VC_HOST=${jobParams.platformEndpoint}; python3 ./caasp-vmware.py destroy --stack-name ${jobParams.stackName} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
         }
     }
 }
