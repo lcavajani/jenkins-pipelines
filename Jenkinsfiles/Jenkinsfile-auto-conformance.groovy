@@ -54,7 +54,7 @@ node {
         }
 
         stage('clone Kubic repos') {
-            common.cloneKubicRepos(jobParametersMap)
+            common.cloneKubicRepos()
         }
     }
 
