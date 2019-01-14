@@ -39,8 +39,6 @@ node {
     def defaultJobParametersMap = common.readDefaultJobParameters()
     def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
 
-    label(PLATFORM)
-
     // workaround to get/initialize the parameters available in the job
     if (currentBuild.number == 1) {
         return

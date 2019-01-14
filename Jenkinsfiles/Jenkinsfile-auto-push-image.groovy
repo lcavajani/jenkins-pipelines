@@ -34,8 +34,6 @@ node {
         triggerJobDryRun: params.get('DRY_RUN')
     ]
 
-    label(PLATFORM)
-
     // workaround to get/initialize the parameters available in the job
     if (currentBuild.number == 1) {
         return
