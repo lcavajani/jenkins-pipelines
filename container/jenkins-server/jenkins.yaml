@@ -67,8 +67,9 @@ credentials:
         - file:
               scope: GLOBAL
               id: "ecp-openrc"
-              fileName: ${openstack-openrc}
-              description: "Username/Password Credentials for Engineering Cloud in Provo"
+              fileName: "ecp-openrc"
+              description: "OpenRC Credentials for Engineering Cloud in Provo"
+              secretBytes: ${openstack-openrc}
         - usernamePassword:
               scope: GLOBAL
               id: "vcenter-api"
