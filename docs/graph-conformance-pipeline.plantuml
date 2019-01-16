@@ -1,0 +1,155 @@
+@startuml
+skinparam backgroundColor GhostWhite
+skinparam rectangle {
+backgroundColor white
+}
+
+artifact Jenkinsfile {
+rectangle jobParameters [
+<b>Define Job parameters
+----
+- Image to use
+- Deployment configuration
+- Memory, CPU of the nodes
+]
+
+rectangle initPipeline [
+<b>Load methods and parameters
+----
+- Define <b><color:red>platform
+- Define <b><color:green>common
+- Define <b><color:gold>defaultJobParametersMap
+- Define <b><color:blue>jobParametersMap
+]
+
+rectangle nodeInfo [
+<b>Stage: node Info
+----
+<b><color:Green>common.<color:darkslategray>nodeInfo()
+]
+
+rectangle setUpWorkspace [
+<b>Stage: set up workspace
+----
+<b><color:Green>common.<color:darkslategray>setUpWorkspace<color:blue>(jobParametersMap)
+]
+
+rectangle cloneKubicRepos [
+<b>Stage: clone Kubic repos
+----
+<b><color:Green>common.<color:darkslategray>cloneKubicRepos()
+]
+
+rectangle pushImage [
+<b>Stage: push image
+----
+<b><color:Red>platform.<color:darkslategray>pushImage<color:blue>(jobParametersMap)
+]
+
+rectangle createEnv [
+<b>Stage: create environment
+----
+<b><color:Red>platform.<color:darkslategray>createEnvironment<color:blue>(jobParametersMap)
+]
+
+rectangle configEnv [
+<b>Stage: configure environment
+----
+<b><color:Green>common.<color:darkslategray>configureEnvironment<color:blue>(jobParametersMap)
+]
+
+rectangle runSonobuoyConformanceTests [
+<b>Stage: run Sonobuoyconformance tests
+----
+<b><color:Green>common.<color:darkslategray>runSonobuoyConformanceTests()
+]
+
+rectangle destroyEnv [
+<b>Stage: destroy environment
+----
+<b><color:Red>platform.<color:darkslategray>destroyEnvironment<color:blue>(jobParametersMap)
+]
+
+rectangle workspaceCleanup [
+<b>Stage: workspace cleanup
+----
+<b><color:Green>common.<color:darkslategray>workspaceCleanup()
+]
+
+jobParameters .down. initPipeline
+initPipeline .down. nodeInfo
+nodeInfo .down. setUpWorkspace
+setUpWorkspace .down. cloneKubicRepos
+cloneKubicRepos .down. pushImage
+pushImage .down. createEnv
+createEnv .down. configEnv
+configEnv .down. runSonobuoyConformanceTests
+runSonobuoyConformanceTests .down. destroyEnv
+destroyEnv .down. workspaceCleanup
+
+}
+
+
+rectangle methodsAndParams [
+methods/<b><color:red>platform.groovy
+methods/<b><color:green>common.groovy
+└─ methods/common/<b><color:gold>readDefaultJobParameters.groovy
+└─ methods/common/<b><color:blue>readJobParameters.groovy
+]
+
+rectangle nodeInfoMethod [
+methods/<b><color:red>platform.groovy
+methods/<b><color:green>common.groovy
+└─ methods/common/<b><color:darkslategray>nodeInfo.groovy
+]
+
+rectangle setUpWorkspaceMethod [
+methods/<b><color:green>common.groovy
+└─ methods/common/<b><color:darkslategray>setUpWorkspace.groovy
+]
+
+rectangle cloneKubicReposMethod [
+methods/<b><color:green>common.groovy
+└─ methods/common/<b><color:darkslategray>cloneKubicRepos.groovy
+]
+
+rectangle pushImageMethod [
+methods/<b><color:red>platform.groovy
+]
+
+rectangle createEnvMethod [
+methods/<b><color:red>platform.groovy
+]
+
+rectangle configEnvMethod [
+methods/<b><color:green>common.groovy
+└─ methods/common/<b><color:darkslategray>configureEnvironment.groovy
+]
+
+rectangle runSonobuoyConformanceTestsMethod [
+methods/<b><color:green>common.groovy
+└─ methods/common/<b><color:darkslategray>runSonobuoyConformanceTests.groovy
+]
+
+rectangle destroyEnvMethod [
+methods/<b><color:red>platform.groovy
+]
+
+rectangle workspaceCleanupMethod [
+methods/<b><color:green>common.groovy
+└─ methods/common/<b><color:darkslategray>workspaceCleanup.groovy
+]
+
+
+initPipeline -right-> methodsAndParams : load
+initPipeline -right-> methodsAndParams : call
+nodeInfo -right-> nodeInfoMethod : call
+setUpWorkspace -right-> setUpWorkspaceMethod : call
+cloneKubicRepos -right-> cloneKubicReposMethod : call
+pushImage -right-> pushImageMethod : call
+createEnv -right-> createEnvMethod : call
+configEnv -right-> configEnvMethod : call
+runSonobuoyConformanceTests -right-> runSonobuoyConformanceTestsMethod : call
+destroyEnv -right-> destroyEnvMethod : call
+workspaceCleanup -right-> workspaceCleanupMethod : call
+@enduml
