@@ -71,32 +71,37 @@ node("docker-${PLATFORM}") {
         }
     }
 
-    stage('create environment') {
-        platform.createEnvironment(jobParametersMap)
-    }
-
-    stage('configure environment') {
-        common.configureEnvironment(jobParametersMap)
-    }
-
-    stage('run Sonobuoy conformance tests') {
-        common.runSonobuoyConformanceTests()
-    }
-
-    stage('destroy environment') {
-        if (!jobParametersMap.environmentDestroy) {
-            input(message: "Proceed to environment destroy ?")
+    try {
+        stage('create environment') {
+            platform.createEnvironment(jobParametersMap)
         }
 
-        platform.destroyEnvironment(jobParametersMap)
-    }
+        stage('configure environment') {
+            common.configureEnvironment(jobParametersMap)
+        }
 
-    stage('Workspace cleanup') {
-        if (jobParametersMap.workspaceCleanup) {
-            common.workspaceCleanup()
-        } else {
-            echo "Skipping Cleanup as request was made to NOT cleanup the workspace"
+        stage('run Sonobuoy conformance tests') {
+            common.runSonobuoyConformanceTests()
+        }
+    } catch (Exception exc) {
+        // do not delete a failed environment so we can investigate
+        jobParametersMap.environmentDestroy = false
+        throw exc
+    } finally {
+        stage('destroy environment') {
+            if (!jobParametersMap.environmentDestroy) {
+                input(message: "Proceed to environment destroy ?")
+            }
+
+            platform.destroyEnvironment(jobParametersMap)
+        }
+
+        stage('Workspace cleanup') {
+            if (jobParametersMap.workspaceCleanup) {
+                common.workspaceCleanup()
+            } else {
+                echo "Skipping Cleanup as request was made to NOT cleanup the workspace"
+            }
         }
     }
 }
-
