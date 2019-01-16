@@ -1,45 +1,69 @@
 # Jenkins QA pipelines
 
-## Images
+### Deploy CI
 
-**Shared**
+1. run jenkins-server with docker-compose
+2. create jobs with jenkins job builder
 
-zypper in pssh, jq
+### Pipeline concepts/workflow
 
-velum-interactions --setup 
-bundle install --without=travis_ci --system
-ruby_version=$(ruby --version | cut -d ' ' -f2 | cut -d '.' -f1-2)
-INTERACTION_PACKAGES="ruby${ruby_version}-rubygem-bundler \
-                      ruby${ruby_version}-devel \
-                      phantomjs \
-                      libxml2-devel \
-                      libxslt-devel"
+Concepts:
 
-**HyperV**
+* Platform is automatically defined by the job name, the name must
+be named `platform-job` (ex: vmware-auto-conformance)
+* The common parameters for the jobs are defined in
+`jobs_parameter_files/common.yaml`
 
+There is a visual representation of the
+[auto-conformance pipeline](./docs/graph-conformance-pipeline.png)
 
-**VMware**
+Main pipeline steps:
 
-pip3 install --no-cache-dir pyvmomi==6.7.0.2018.9 pyyaml
-
-zypper in genisomage
-
-**OpenStack**
-
-zypper in python-glanceclient python-novaclient terraform
-
-**KVM**
-
-zypper in python-glanceclient python-novaclient terraform-libvirt
+1. Define job parameters
+2. Load common methods
+3. Load platform methods
+4. Merge parameters from pipeline and default parameters
+5. Run stages
 
 
+### Project structure
 
-* use empty default valus in pipeline to avoid null param
+```
+├── container
+│   ├── jenkins-server
+│   └── jenkins-slaves
+├── Jenkinsfiles
+│   └── methods
+    ├── common.groovy
+    ├── hyperv.groovy
+    ├── openstack.groovy
+    └── vmware.groovy
+├── jenkins_job_builder
+├── jobs_parameter_files
+└── scripts
+```
+
+**container**: Everything related to containers.
+
+**Jenkinsfiles**: Jenkinsfiles definitions and the methods
+used in CI (common, platform...).
+
+**Jenkinsfiles/common.groovy**: "list" of available common methods
+which point to the files in Jenkinsfiles/common/
+
+**Jenkinsfiles/{hyperv,kvm,openstack,vmware,xen}.groovy**: Available
+methods for a give platforms.
+
+**jenkins_job_builder**: Defintions of jobs to create
+with Jenkins Job Builder (JJB).
+
+**job_parameter_files**: Configuration/parameter files
+that can be consumed by Jenkinsfiles.
+
+**scripts**: Contains scripts that can be used in CI.
 
 
-rename params to jobParams
-
-### Involved step to add a new platform
+### Involved steps to add a new platform
 
 **Jenkins methods**
 
@@ -95,6 +119,7 @@ Add a docker slave for the platform: `container/jenkins-server/jenkins.yaml`
             instanceCapStr: "5"
 ```
 
+
 **Jenkins credentials**
 
 Create docker secret to mount in instance with docker-compose: `container/jenkins-server/docker-compose.yaml`
@@ -125,6 +150,7 @@ credentials:
               description: "Username/Password Credentials for Engineering Cloud in Provo"
 ```
 
+
 **Jenkins pipeline**
 
 Add default values: `jobs_parameter_files/common.yaml`
@@ -136,6 +162,7 @@ openstack:
   internal_net: "caasp-qa-ci-net"
   external_net: "floating"
 ```
+
 
 **Jenkins Job Builder**
 
@@ -152,6 +179,7 @@ Add platform jobs: `jenkins_job_builder/pipelines.yaml`
       - '{name}-{setup}-conformance':
           setup: 3m2w
 ```
+
 
 **Misc**
 

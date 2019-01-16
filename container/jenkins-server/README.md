@@ -5,10 +5,25 @@ docker build -t jenkins-with-plugins .
 ```
 
 ```console
-docker run -d -v jenkins_home:/jenkins -p 8080:8080 jenkins-with-plugins:latest
+docker run -d -v jenkins_home:/jenkins -p 8080:8080 jenkins-with-plugins:stable
 ```
 
-## plugins
+## Secrets
+
+Create the following secrets:
+
+```
+./secrets/hyperv-user
+./secrets/hyperv-password
+./secrets/openstack-openrc
+./secrets/jenkins-user
+./secrets/jenkins-password
+./secrets/vmware-user
+./secrets/vmware-password
+./secrets/jenkins-ssh-private-key
+```
+
+## Plugins
 
 | Plugin Name | Description |
 |-------------|-------------|
