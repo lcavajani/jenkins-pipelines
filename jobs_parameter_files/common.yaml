@@ -11,6 +11,8 @@ openstack:
 vmware:
   platform_endpoint: "jazz.qa.prv.suse.net"
   credentials_id: "vcenter-api"
+  varfile: "caasp-vmware.yaml"
+  media_dir: "caasp-qa-jenkins-ci"
 
 jenkins:
   credentials_id: "jenkins-api"
@@ -36,6 +38,7 @@ default:
 
   jobs_parameter_files_dir: "jobs_parameter_files"
 
+# defaults for list_image_repo.py
 available_builds:
   results_dir: "caasp-builds"
   results_file: "files_repo.json"
