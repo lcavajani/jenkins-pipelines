@@ -6,8 +6,6 @@ OPENRC=$1
 IMAGE_URL=$2
 INSECURE=${3:-""}
 
-#${INSECURE:+--insecure}
-
 source $OPENRC
 
 IMAGE_NAME="$(basename $IMAGE_URL)"
@@ -32,7 +30,7 @@ if ! openstack ${INSECURE:+--insecure} image list --private | grep -q " $IMAGE_N
     echo "INFO: Uploading image: $IMAGE_NAME"
     openstack --insecure image create $IMAGE_NAME --private
         --disk-format qcow2 --container-format bare
-        --min-disk 40 --file $IMAGE_NAME \
+        --min-disk 40 --file $IMAGE_PATH \
         --property caasp-version="$IMAGE_VERSION" \
         --property caasp-build="$IMAGE_BUILD"
 else
