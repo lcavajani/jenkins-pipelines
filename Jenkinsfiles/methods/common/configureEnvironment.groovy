@@ -5,10 +5,9 @@ def call(Map jobParams) {
         }
     }
 
-    // TODO: Remove package installation
     timeout(90) {
         dir('automation/velum-bootstrap') {
-            sh(script: './velum-interactions --setup')
+            sh(script: 'sed -i \'/^BUNDLE_PATH/d\' ./.bundle/config')
         }
     }
 
