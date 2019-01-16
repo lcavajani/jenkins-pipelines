@@ -32,14 +32,26 @@ def call(PLATFORM, Map params, Map defaultParams) {
         workerCpu: (p.get('WORKER_CPU') == '') ? dp.default.worker_cpu : p.get('WORKER_CPU'),
         workerCount: (p.get('WORKER_COUNT') == '') ? dp.default.worker_count : p.get('WORKER_COUNT'),
 
-        adminFlavor: (p.get('ADMIN_FLAVOR') == '') ? dp.default.admin_flavor : p.get('ADMIN_FLAVOR'),
-        masterFlavor: (p.get('MASTER_FLAVOR') == '') ? dp.default.master_flavor : p.get('MASTER_FLAVOR'),
-        workerFlavor: (p.get('WORKER_FLAVOR') == '') ? dp.default.worker_flavor : p.get('WORKER_FLAVOR'),
-    
         chooseCrio: p.get('CHOOSE_CRIO'),
         environmentDestroy: p.get('ENVIRONMENT_DESTROY'),
         workspaceCleanup: p.get('WORKSPACE_CLEANUP')
     ]
+
+    switch (PLATFORM) {
+        case "openstack":
+            parametersMap << [
+                adminFlavor: (p.get('ADMIN_FLAVOR') == '') ? dp.default.admin_flavor : p.get('ADMIN_FLAVOR'),
+                masterFlavor: (p.get('MASTER_FLAVOR') == '') ? dp.default.master_flavor : p.get('MASTER_FLAVOR'),
+                workerFlavor: (p.get('WORKER_FLAVOR') == '') ? dp.default.worker_flavor : p.get('WORKER_FLAVOR')
+            ]
+            parametersMap.internal_net = dp.internal_net
+            parametersMap.external_net = dp.external_net
+            break
+        case "vmware":
+            parametersMap.varfile = dp.varfile
+            parametersMap.media_dir = dp.media_dir
+            break
+    }
 
     println "INFO: build parameters"
     println parametersMap
