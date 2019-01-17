@@ -1,7 +1,7 @@
 jenkins:
   # $JENKINS_URL
   ## url: "https://10.10.10.10:8080"
-  view: "default"
+  view: "QA-CAASP"
   authentication:
     enabled: True
     # $JENKINS_USER
@@ -25,16 +25,16 @@ parameters:
 
 jobs:
   hyperv:
-    - name: "hyperv-push-image"
+    - name: "qa-caasp-hyperv-push-image"
 
-  openstack:
-    - name: "openstack-push-image"
+  #openstack:
+  #  - name: "openstack-push-image"
   
   #kvm:
   #  - name: "kvm-push-image"
 
   vmware:
-    - name: "vmware-push-image"
+    - name: "qa-caasp-vmware-push-image"
 
   #xen:
   #  - name: "xen-push-image"

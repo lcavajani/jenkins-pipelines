@@ -1,0 +1,119 @@
+# Conformance job
+- job-template:
+    name: 'qa-caasp-{PLATFORM}-{setup}-conformance'
+    project-type: pipeline
+    sandbox: true
+    concurrent: true
+    node: 'docker-{PLATFORM}'
+
+    build-discarder:
+      numToKeep: -1
+      daysToKeep: 30
+
+    parameters:
+      # PLATFORM 
+      - string:
+          name: PLATFORM
+          default: '{PLATFORM}'
+          description: >-
+            Target PLATFORM
+
+      - string:
+          name: PLATFORM_ENDPOINT
+          default: '{PLATFORM_ENDPOINT|}'
+          description: >-
+            Endpoint to connect to
+
+      - string:
+          name: CREDENTIALS_ID
+          default: '{CREDENTIALS_ID|}'
+          description: >-
+            Jenkins credentials ID
+
+      # IMAGE
+      - string:
+          name: IMAGE
+          description: >-
+            CaaSP image to use
+
+      - string:
+          name: IMAGE_URL
+          default: '{IMAGE_URL|}'
+          description: >-
+            CaaSP image URL
+
+      # ADMIN
+      - string:
+          name: ADMIN_RAM
+          default: '{ADMIN_RAM|}'
+          description: >-
+            Memory of admin node
+
+      - string:
+          name: ADMIN_CPU
+          default: '{ADMIN_CPU|}'
+          description: >-
+            vCPU of admin node
+
+      # MASTERS
+      - string:
+          name: MASTER_COUNT
+          default: '{MASTER_COUNT|}'
+          description: >-
+            Number of master nodes
+
+      - string:
+          name: MASTER_RAM
+          default: '{MASTER_RAM|}'
+          description: >-
+            Memory of master nodes
+
+      - string:
+          name: MASTER_CPU
+          default: '{MASTER_CPU|}'
+          description: >-
+            vCPU of master nodes
+
+      # WORKERS
+      - string:
+          name: WORKER_COUNT
+          default: '{WORKER_COUNT|}'
+          description: >-
+            Number of worker nodes
+
+      - string:
+          name: WORKER_RAM
+          default: '{WORKER_RAM|}'
+          description: >-
+            Memory of worker nodes
+
+      - string:
+          name: WORKER_CPU
+          default: '{WORKER_CPU|}'
+          description: >-
+            vCPU of worker nodes
+
+      # MISC
+      - bool:
+          name: CHOOSE_CRIO
+          default: false
+          description: >-
+            Use crio as container engine ?
+
+      - bool:
+          name: ENVIRONMENT_DESTROY
+          default: true
+          description: >-
+            Destroy env once done ? if false, manual action is required
+
+      - bool:
+          name: WORKSPACE_CLEANUP
+          default: true
+          description: >-
+            Cleanup workspace once done ?
+
+    pipeline-scm:
+      scm:
+        - jenkins-pipelines
+      script-path: 'Jenkinsfiles/Jenkinsfile-auto-conformance.groovy'
+      lightweight-checkout: true

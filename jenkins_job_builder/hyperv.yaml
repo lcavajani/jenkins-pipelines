@@ -1,0 +1,33 @@
+# Hyper-V
+- project:
+    name: push-image
+    PLATFORM: hyperv
+
+    jobs:
+      - 'qa-caasp-{PLATFORM}-push-image':
+            JOB_CI_FILE: auto-push-image_trigger-jobs.yaml
+      - 'qa-caasp-{PLATFORM}-{setup}-conformance':
+            setup: 1m2w
+      - 'qa-caasp-{PLATFORM}-{setup}-conformance':
+            setup: 3m2w
+
+# VMware
+#- project:
+#    name: vmware
+#    jobs:
+#      - '{name}-push-image'
+#      - '{name}-{setup}-conformance':
+#          setup: 1m2w
+#      - '{name}-{setup}-conformance':
+#          setup: 3m2w
+#
+## OpenStack
+#- project:
+#    name: openstack
+#    jobs:
+#      - '{name}-push-image'
+#      - '{name}-{setup}-conformance':
+#          setup: 1m2w
+#      - '{name}-{setup}-conformance':
+#          setup: 3m2w
+

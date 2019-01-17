@@ -1,26 +1,8 @@
-// Configure the build properties
-properties([
-    buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
-    disableConcurrentBuilds(),
-    parameters([
-        string(name: 'IMAGES_REPO', defaultValue: 'http://download.suse.de/ibs/Devel:/CASP:/Head:/ControllerNode/images-sle15/', description: 'URL of the image download repository'),
-        //string(name: 'RESULTS_REPO', defaultValue: 'gitlab@gitlab.suse.de:lcavajani/caasp-builds.git', description: 'Git repository to store the results of availabe builds')
-        string(name: 'RESULTS_REPO', defaultValue: 'git@github.com:lcavajani/caasp-builds.git', description: 'Git repository to store the results of availabe builds'),
-
-        string(name: 'JOB_CI_FILE', defaultValue: 'detect-new-builds_trigger-jobs.yaml', description: 'CI job configuration file for trigger_jenkins_jobs script'),
-        booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Use dry-run mode when launching the jobs'),
-
-        booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')
-    ])
-])
-
-// manage file name in parameters file
-
 def jobParametersMap = [
     imagesRepo: params.get('IMAGES_REPO'),
     resultsGitRepo: params.get('RESULTS_REPO'),
     jobsCiFile: params.get('JOB_CI_FILE'),
-    triggerJobMode: 'auto',
+    triggerJobMode: params.get('MODE'),
     triggerJobDryRun: params.get('DRY_RUN'),
     workspaceCleanup: params.get('WORKSPACE_CLEANUP'),
     // TODO: change

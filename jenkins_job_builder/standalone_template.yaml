@@ -1,0 +1,10 @@
+# Standalone job, can be anything
+- job-template:
+    name: 'qa-caasp-{name}'
+    project-type: pipeline
+    sandbox: true
+    pipeline-scm:
+      scm:
+        - jenkins-pipelines
+      script-path: 'Jenkinsfiles/Jenkinsfile-{name}.groovy'
+      lightweight-checkout: true

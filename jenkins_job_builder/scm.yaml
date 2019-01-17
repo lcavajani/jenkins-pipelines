@@ -1,0 +1,9 @@
+# Default SCM
+- scm:
+    name: jenkins-pipelines
+    scm:
+      - git:
+         url: https://github.com/lcavajani/jenkins-pipelines
+         branches:
+          - origin/dev
+#          - origin/master

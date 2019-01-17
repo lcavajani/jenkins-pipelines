@@ -1,32 +1,8 @@
-// Get platform from job name
-def PLATFORM = currentBuild.projectName.split('-')[0]
+def PLATFORM = params.get('PLATFORM')
 
-// Configure the build properties
-properties([
-    buildDiscarder(logRotator(numToKeepStr: '15', daysToKeepStr: '31')),
-    disableConcurrentBuilds(),
-    parameters([
-        string(name: 'IMAGE', description: 'CaaSP Image To Use'),
-        string(name: 'IMAGE_URL', description: 'CaaSP Image URL'),
-
-        string(name: 'PLATFORM_ENDPOINT', defaultValue: '', description: 'Endpoint to connect to'),
-        string(name: 'CREDENTIALS_ID', defaultValue: '', description: 'Jenkins credentials ID'),
-
-        string(name: 'JOB_CI_FILE', defaultValue: 'auto-push-image_trigger-jobs.yaml', description: 'CI configuration file for trigger_jenkins_jobs script'),
-        booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Use dry-run mode when launching the jobs'),
-
-        booleanParam(name: 'WORKSPACE_CLEANUP', defaultValue: true, description: 'Cleanup workspace once done ?')
-    ])
-])
-
-//TODO remove all zypper steps, pssh, velum-interactions
 node("docker-${PLATFORM}") {
     checkout scm
 
-    // workaround to get/initialize the parameters available in the job
-    if (currentBuild.number == 1) {
-        return
-    }
 
     def common = load('./Jenkinsfiles/methods/common.groovy')
     def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")

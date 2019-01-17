@@ -1,0 +1,52 @@
+# Detect new builds on OBS
+- job:
+    name: qa-caasp-detect-new-builds
+    project-type: pipeline
+    sandbox: true
+
+    build-discarder:
+      numToKeep: -1
+      daysToKeep: 30
+
+    parameters:
+      - string:
+          name: IMAGES_REPO
+          default: http://download.suse.de/ibs/Devel:/CASP:/Head:/ControllerNode/images-sle15/
+          description: >-
+            URL of the image download repository
+
+      - string:
+          name: RESULTS_REPO
+          default: git@github.com:lcavajani/caasp-builds.git
+          description: >-
+            Git repository to store the results of availabe builds
+
+      - string:
+          name: JOB_CI_FILE
+          default: detect-new-builds_trigger-jobs.yaml
+          description: >-
+            CI configuration file for trigger_jenkins_jobs script
+
+      - string:
+          name: MODE
+          default: auto
+          description: >-
+            Use auto mode when launching the jobs
+
+      - bool:
+          name: DRY_RUN
+          default: false
+          description: >-
+            Use dry-run mode when launching the jobs
+
+      - bool:
+          name: WORKSPACE_CLEANUP
+          default: true
+          description: >-
+            Cleanup workspace once done ?
+
+    pipeline-scm:
+      scm:
+        - jenkins-pipelines
+      script-path: 'Jenkinsfiles/Jenkinsfile-detect-new-builds.groovy'
+      lightweight-checkout: true
