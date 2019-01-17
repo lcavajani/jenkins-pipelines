@@ -34,10 +34,11 @@ Main pipeline steps:
 │   └── jenkins-slaves
 ├── Jenkinsfiles
 │   └── methods
-    ├── common.groovy
-    ├── hyperv.groovy
-    ├── openstack.groovy
-    └── vmware.groovy
+│       ├── common
+│       ├── common.groovy
+│       ├── hyperv.groovy
+│       ├── openstack.groovy
+│       └── vmware.groovy
 ├── jenkins_job_builder
 ├── jobs_parameter_files
 └── scripts
