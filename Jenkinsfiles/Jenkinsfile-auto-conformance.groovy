@@ -1,7 +1,7 @@
-node {
-    checkout scm
+def PLATFORM = params.get('PLATFORM')
 
-    def PLATFORM = params.get('PLATFORM')
+node("qa-caasp-docker-${PLATFORM}") {
+    checkout scm
 
     def common = load('./Jenkinsfiles/methods/common.groovy')
     def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")
