@@ -9,7 +9,7 @@ def jobParametersMap = [
     branchName: 'master'
 ]
 
-node {
+node('qa-caasp') {
     checkout scm
 
     def common = load('./Jenkinsfiles/methods/common.groovy')
