@@ -4,7 +4,7 @@
     project-type: pipeline
     sandbox: true
     concurrent: false
-    node: 'docker-{PLATFORM}'
+    node: 'qa-caasp'
 
     build-discarder:
       numToKeep: -1
