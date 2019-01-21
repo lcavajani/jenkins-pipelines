@@ -291,7 +291,7 @@ def retrieve_authentication(ci_config):
         if auth_config.get("user", None):
             auth["user"] = auth_config["user"]
         else:
-            auth["user"] = get_env_var("JENKINS_USER")
+            auth["user"] = get_env_var("JENKINS_USERNAME")
 
         if auth_config.get("password", None):
             auth["password"] = auth_config["password"]
