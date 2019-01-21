@@ -29,7 +29,7 @@ Main pipeline steps:
 ### Project structure
 
 ```
-├── container
+├── containers
 │   ├── jenkins-server
 │   └── jenkins-slaves
 ├── Jenkinsfiles
@@ -44,7 +44,7 @@ Main pipeline steps:
 └── scripts
 ```
 
-**container**: Everything related to containers.
+**containers**: Everything related to containers.
 
 **Jenkinsfiles**: Jenkinsfiles definitions and the methods
 used in CI (common, platform...).
