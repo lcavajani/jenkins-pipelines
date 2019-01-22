@@ -23,6 +23,11 @@ def getPlatformFromJobName(currentBuild) {
     task(currentBuild)
 }
 
+def loadCredentialsFromSlave() {
+    def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/loadCredentialsFromSlave.groovy")
+    task()
+}
+
 def readDefaultJobParameters() {
     def task = load("${WORKSPACE}/Jenkinsfiles/methods/common/readDefaultJobParameters.groovy")
     task()
