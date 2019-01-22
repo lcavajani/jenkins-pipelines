@@ -34,6 +34,8 @@ if [[ $# -lt 1 ]] || [[ "$1" == "-"* ]]; then
       fi
       if [ ! -z "$FSROOT" ]; then
         PARAMS="$PARAMS -fsroot $FSROOT"
+      else
+        PARAMS="$PARAMS -fsroot $HOME"
       fi
       if [ ! -z "$LABELS" ]; then
         PARAMS="$PARAMS -labels \"$LABELS\""
@@ -57,7 +59,10 @@ if [[ $# -lt 1 ]] || [[ "$1" == "-"* ]]; then
         PARAMS="$PARAMS -noRetryAfterConnected"
       fi
       if [ ! -z "$PASSWORD" ]; then
-        PARAMS="$PARAMS -passwordEnvVariable PASSWORD"
+        PARAMS="$PARAMS -password $PASSWORD"
+      fi
+      if [ ! -z "$PASSWORD_ENV" ]; then
+        PARAMS="$PARAMS -passwordEnvVariable PASSWORD_ENV"
       fi
       if [ ! -z "$PASSWORD_FILE" ]; then
         PARAMS="$PARAMS -passwordFile $PASSWORD_FILE"
@@ -89,8 +94,8 @@ if [[ $# -lt 1 ]] || [[ "$1" == "-"* ]]; then
       fi
     fi
   fi
-  echo Running java "$JAVA_OPTS" -jar "$JAR" -fsroot "$HOME" "$PARAMS" "$@"
-  exec java "$JAVA_OPTS" -jar "$JAR" -fsroot "$HOME" "$PARAMS" "$@"
+  echo Running java "$JAVA_OPTS" -jar "$JAR" "$PARAMS" "$@"
+  exec java $JAVA_OPTS -jar $JAR $PARAMS $@
 fi
 
 # As argument is not jenkins, assume user want to run his own process, for sample a `bash` shell to explore this image
