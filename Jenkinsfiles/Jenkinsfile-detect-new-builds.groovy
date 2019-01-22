@@ -1,19 +1,20 @@
-def jobParametersMap = [
-    imagesRepo: params.get('IMAGES_REPO'),
-    resultsGitRepo: params.get('RESULTS_REPO'),
-    jobsCiFile: params.get('JOB_CI_FILE'),
-    triggerJobMode: params.get('MODE'),
-    triggerJobDryRun: params.get('DRY_RUN'),
-    workspaceCleanup: params.get('WORKSPACE_CLEANUP'),
-    // TODO: change
-    branchName: 'master'
-]
-
 node('qa-caasp') {
     checkout scm
 
+    def jobParametersMap = [
+        imagesRepo: params.get('IMAGES_REPO'),
+        resultsGitRepo: params.get('RESULTS_REPO'),
+        jobsCiFile: params.get('JOB_CI_FILE'),
+        triggerJobMode: params.get('MODE'),
+        triggerJobDryRun: params.get('DRY_RUN'),
+        workspaceCleanup: params.get('WORKSPACE_CLEANUP'),
+    ]
+
     def common = load('./Jenkinsfiles/methods/common.groovy')
     def defaultJobParametersMap = common.readDefaultJobParameters()
+
+    def credentials = common.loadCredentialsFromSlave()
+    jobParametersMap.credentials = credentials
 
     stage('preparation') {
         stage('node Info') {
@@ -28,8 +29,8 @@ node('qa-caasp') {
             sh(script: "mkdir -p ${WORKSPACE}/caasp-builds")
 
             dir("caasp-builds") {
-                checkout([$class: 'GitSCM', branches: [[name: "*/${jobParametersMap.branchName}"]],
-                userRemoteConfigs: [[credentialsId: defaultJobParametersMap.git.credentials_id, url: jobParametersMap.resultsGitRepo]],
+                checkout([$class: 'GitSCM', branches: [[name: "*/master"]],
+                userRemoteConfigs: [[url: jobParametersMap.resultsGitRepo]],
                 extensions: [[$class: 'CleanCheckout']]])
             }
         }
@@ -44,9 +45,6 @@ node('qa-caasp') {
     }
 
     //stage('push results to GitLab') {
-    //    withCredentials([sshUserPrivateKey(credentialsId: jobParametersMap.credentialsId, keyFileVariable: "SSH_KEY_PATH")]) {
-
-
     //        sh(script: "git add & commit")
     //    }
     //}

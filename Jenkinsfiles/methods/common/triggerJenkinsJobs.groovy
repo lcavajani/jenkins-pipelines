@@ -1,7 +1,7 @@
 def call(Map jobParams, Map defaultParams) {
     dir('scripts/trigger_jenkins_jobs') {
-        withCredentials([usernamePassword(credentialsId: defaultParams.jenkins.credentials_id, usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {
-            jenkinsCrumb = sh(returnStdout: true, script: "curl -u \"${JENKINS_USER}:${JENKINS_PASSWORD}\" '${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'")
+        withEnv(["JENKINS_API_USER=${jobParams.credentials.jenkins_api_username}", "JENKINS_API_PASSWORD=${jobParams.credentials.jenkins_api_password}"]) {
+            jenkinsCrumb = sh(returnStdout: true, script: "curl -u \"${JENKINS_API_USER}:${JENKINS_API_PASSWORD}\" '${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'")
 
             def dryRunModeParam = (jobParams.triggerJobDryRun) ? '--dry-run' : ''
             def imageUrlParam = (jobParams.imageSourceUrl) ? "--image-url ${jobParams.imageSourceUrl}" : ''

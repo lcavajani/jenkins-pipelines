@@ -1,18 +1,22 @@
 node('qa-caasp') {
     checkout scm
 
+    jobParametersMap << [
+        jobsCiFile: params.get('JOB_CI_FILE'),
+        triggerJobDryRun: params.get('DRY_RUN')
+    ]
+
     def common = load('./Jenkinsfiles/methods/common.groovy')
 
     def PLATFORM = params.get('PLATFORM')
     def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")
 
+    def credentials = common.loadCredentialsFromSlave()
+
     def defaultJobParametersMap = common.readDefaultJobParameters()
     def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
+    jobParametersMap.credentials = credentials
 
-    jobParametersMap << [
-        jobsCiFile: params.get('JOB_CI_FILE'),
-        triggerJobDryRun: params.get('DRY_RUN')
-    ]
 
     stage('preparation') {
         stage('node Info') {

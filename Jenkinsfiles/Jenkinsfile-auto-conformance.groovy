@@ -6,8 +6,11 @@ node('qa-caasp') {
     def PLATFORM = params.get('PLATFORM')
     def platform = load("./Jenkinsfiles/methods/${PLATFORM}.groovy")
 
+    def credentials = common.loadCredentialsFromSlave()
+
     def defaultJobParametersMap = common.readDefaultJobParameters()
     def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
+    jobParametersMap.credentials = credentials
 
     stage('preparation') {
         stage('node Info') {
