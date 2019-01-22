@@ -3,6 +3,8 @@
     name: 'qa-caasp-{name}'
     project-type: pipeline
     sandbox: true
+    node: 'qa-caasp'
+
     pipeline-scm:
       scm:
         - jenkins-pipelines

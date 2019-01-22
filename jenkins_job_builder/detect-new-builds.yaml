@@ -3,6 +3,7 @@
     name: qa-caasp-detect-new-builds
     project-type: pipeline
     sandbox: true
+    node: 'qa-caasp'
 
     build-discarder:
       numToKeep: -1
