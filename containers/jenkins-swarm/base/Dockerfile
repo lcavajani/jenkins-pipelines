@@ -15,8 +15,9 @@ RUN mkdir -p $JENKINS_HOME \
   && groupadd -g $GID $GROUP \
   && useradd -d $JENKINS_HOME -u $UID -g $GID -m -s /bin/bash $USER
 
-RUN zypper ref && \
-    zypper -n in curl java-1_8_0-openjdk && \
+RUN zypper ar http://download.suse.de/ibs/SUSE:/CA/openSUSE_Leap_15.0/SUSE:CA.repo && \
+    zypper ref && \
+    zypper -n in curl java-1_8_0-openjdk ca-certificates-suse && \
     zypper clean -a
 
 RUN curl --create-dirs -sSL https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/swarm-client/${JENKINS_SWARM_VERSION}/swarm-client-${JENKINS_SWARM_VERSION}.jar -o /usr/share/jenkins/swarm-client-${JENKINS_SWARM_VERSION}.jar \

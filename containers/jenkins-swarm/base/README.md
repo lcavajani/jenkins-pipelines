@@ -1,7 +1,7 @@
 # Base container slave image
 
 ```console
-podman build -t jenkins-swarm/base:stable .
+podman build -t jenkins-swarm/base .
 ```
 
 

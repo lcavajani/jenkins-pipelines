@@ -1,4 +1,4 @@
-FROM jenkins-swarm/base:stable
+FROM jenkins-swarm/base
 LABEL maintainer="lcavajani@suse.com"
 
 ARG USER=jenkins
