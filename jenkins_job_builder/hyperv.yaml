@@ -1,6 +1,6 @@
 # Hyper-V
 - project:
-    name: push-image
+    name: hyperv-push-image
     PLATFORM: hyperv
 
     jobs:
