@@ -18,8 +18,9 @@ def createEnvironment(Map jobParams) {
     
         // Extract state from log file and generate environment.json
         sh(script: "cp -v ./caasp-vmware.state ../../logs")
-        sh(script: "./tools/generate-environment")
-        sh(script: "../misc-tools/generate-ssh-config ./environment.json")
+        // Required as caasp-vmware is not yet in kubic-project/automation
+        sh(script: "export SSH_KEY=${WORKSPACE}/automation/misc-files/id_shared && ./tools/generate-environment")
+        sh(script: "${WORKSPACE}/automation/misc-tools/generate-ssh-config ./environment.json")
         sh(script: "cp -v environment.json ${WORKSPACE}/environment.json")
         sh(script: "cat ${WORKSPACE}/environment.json")
     }
