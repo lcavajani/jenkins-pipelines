@@ -4,5 +4,5 @@ IMG    := ${NAME}:${TAG}
 LATEST := ${NAME}:latest
 
 build:
-	@podman build --no-cache -t ${IMG} .
+	@podman build -t ${IMG} .
 	@podman tag ${IMG} ${LATEST}
