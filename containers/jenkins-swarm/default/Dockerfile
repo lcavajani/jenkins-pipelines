@@ -22,7 +22,7 @@ RUN pip3 install pyvmomi==${PYVOMI_VERSION}
 
 # terraform
 ENV TERRAFORM_VERSION=0.11.1
-RUN curl -sSL https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip -o terraform.zip  && \
+RUN curl -sSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform.zip  && \
     unzip terraform.zip && rm -vf terraform.zip && \
     mv ./terraform /usr/local/bin/terraform && \
     chmod +x /usr/local/bin/terraform
