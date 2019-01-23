@@ -4,7 +4,7 @@ jenkins:
   view: "QA-CAASP"
   authentication:
     enabled: True
-    # $JENKINS_USER
+    # $JENKINS_USERNAME
     ## user: "jenkins_user"
 
     # $JENKINS_PASSWORD

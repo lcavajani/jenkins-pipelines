@@ -4,7 +4,7 @@ jenkins:
   view: "QA-CAASP"
   authentication:
     enabled: True
-    # $JENKINS_USER
+    # $JENKINS_USERNAME
     ## user: "jenkins_user"
 
     # $JENKINS_PASSWORD
@@ -31,6 +31,17 @@ jobs:
         WORKER_COUNT: 2
 
     - name: "qa-caasp-hyperv-3m2w-conformance"
+      parameters:
+        MASTER_COUNT: 3
+        WORKER_COUNT: 2
+
+  vmware:
+    - name: "qa-caasp-vmware-1m2w-conformance"
+      parameters:
+        MASTER_COUNT: 1
+        WORKER_COUNT: 2
+
+    - name: "qa-caasp-vmware-3m2w-conformance"
       parameters:
         MASTER_COUNT: 3
         WORKER_COUNT: 2
