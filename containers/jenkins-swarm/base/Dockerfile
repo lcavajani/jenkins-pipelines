@@ -1,14 +1,14 @@
-ARG LEAP_VERSION=15.0
+ENV LEAP_VERSION=15.0
 FROM opensuse/leap:$LEAP_VERSION
 LABEL maintainer="lcavajani@suse.com"
 
 ENV JENKINS_SWARM_VERSION=3.15
 
-ARG USER=jenkins
-ARG GROUP=jenkins
-ARG UID=1000
-ARG GID=1000
-ARG JENKINS_HOME=/var/jenkins_home
+ENV USER=jenkins
+ENV GROUP=jenkins
+ENV UID=1000
+ENV GID=1000
+ENV JENKINS_HOME=/var/jenkins_home
 
 RUN mkdir -p $JENKINS_HOME \
   && chown $UID:$GID $JENKINS_HOME \

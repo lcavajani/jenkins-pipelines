@@ -1,8 +1,8 @@
 FROM jenkins-slave/base:stable
 
-ARG terraform_version=0.11.1
-ARG ruby_version=2.5
-ARG leap_version=15.0
+ENV terraform_version=0.11.1
+ENV ruby_version=2.5
+ENV leap_version=15.0
 
 # zypper
 RUN zypper ref && \
@@ -16,7 +16,11 @@ RUN pip3 install --no-cache-dir --upgrade pip
 RUN pip3 install requests pyyaml
 
 # terraform
-RUN curl -sSL https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip -o /usr/local/bin/terraform
+RUN curl -sSL https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip -o terraform.zip  && \
+    unzip terraform.zip && \
+    rm -vf terraform.zip && \
+    mv ./terraform /usr/local/bin/terraform && \
+    chmod +x /usr/local/bin/terraform
 
 # velum-interaction requirements
 RUN zypper ar https://download.opensuse.org/repositories/devel:/tools/openSUSE_Leap_${leap_version}/devel:tools.repo

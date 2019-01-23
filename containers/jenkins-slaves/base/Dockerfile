@@ -1,9 +1,9 @@
 FROM opensuse/leap
 
-ARG user=jenkins
-ARG group=jenkins
-ARG uid=1000
-ARG gid=1000
+ENV user=jenkins
+ENV group=jenkins
+ENV uid=1000
+ENV gid=1000
 ENV JENKINS_AGENT_HOME=/home/${user}
 
 

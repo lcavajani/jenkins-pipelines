@@ -6,16 +6,16 @@ RUN zypper ref && \
     zypper -n in git curl java-1_8_0-openjdk jenkins catatonit && \
     zypper clean -a
 
-ARG user=jenkins
-ARG group=jenkins
-ARG uid=1000
-ARG gid=1000
-ARG http_port=8080
-ARG agent_port=50000
-ARG JENKINS_HOME=/var/jenkins_home
+ENV user=jenkins
+ENV group=jenkins
+ENV uid=1000
+ENV gid=1000
+ENV http_port=8080
+ENV agent_port=50000
+ENV JENKINS_HOME=/var/jenkins_home
 
 # jenkins version being bundled in this docker image
-ARG JENKINS_VERSION
+ENV JENKINS_VERSION
 ENV JENKINS_VERSION ${JENKINS_VERSION:-2.150.1}
 ENV JENKINS_HOME $JENKINS_HOME
 ENV JENKINS_SLAVE_AGENT_PORT ${agent_port}
