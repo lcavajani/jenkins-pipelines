@@ -22,7 +22,11 @@ RUN pip3 install pyvmomi==${PYVOMI_VERSION}
 
 # terraform
 ARG TERRAFORM_VERSION=0.11.1
-RUN curl -sSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o /usr/local/bin/terraform
+RUN curl -sSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o /usr/local/bin/terraform && chmod +x /usr/local/bin/terraform
+
+# sonobuoy
+ARG SONOBUOY_VERSION=0.11.6
+RUN curl -ssL https://github.com/heptio/sonobuoy/releases/download/v${SONOBUOY_VERSION}/sonobuoy_${SONOBUOY_VERSION}_linux_amd64.tar.gz -o /usr/local/bin/sonobuoy && chmod +x /usr/local/bin/sonobuoy
 
 # velum-interaction requirements
 ARG RUBY_VERSION=2.5
