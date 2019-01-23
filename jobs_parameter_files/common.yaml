@@ -12,7 +12,6 @@ vmware:
   platform_endpoint: "jazz.qa.prv.suse.net"
   credentials_id: "vcenter-api"
   varfile: "caasp-vmware.yaml"
-  media_dir: "caasp-qa-jenkins-ci"
 
 jenkins:
   credentials_id: "jenkins-api"
