@@ -1,7 +1,7 @@
 def pushImage(Map jobParams) {
     dir("scripts") {
         timeout(120) {
-            withEnv(["VC_USERNAME=${jobParams.credentials.vmware_username}", "VC_PASSWORD=${jobParams.credentials.vmware_password}")]) {
+            withEnv(["VC_USERNAME=${jobParams.credentials.vmware_username}", "VC_PASSWORD=${jobParams.credentials.vmware_password}"]) {
                 sh(script: "./upload-image-vmware.sh ${jobParams.varfile} ${jobParams.imageSourceUrl} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
             }
         }
@@ -11,7 +11,7 @@ def pushImage(Map jobParams) {
 def createEnvironment(Map jobParams) {
     dir("caasp-vmware") {
         timeout(120) {
-            withEnv(["VC_USERNAME=${jobParams.credentials.vmware_username}", "VC_PASSWORD=${jobParams.credentials.vmware_password}")]) {
+            withEnv(["VC_USERNAME=${jobParams.credentials.vmware_username}", "VC_PASSWORD=${jobParams.credentials.vmware_password}"]) {
                 sh(script: "set -o pipefail; export VC_HOST=${jobParams.platformEndpoint}; python3 ./caasp-vmware.py deploy --var-file ${jobParams.varfile} --media ${jobParams.image} --stack-name ${jobParams.stackName} --admin-ram ${jobParams.adminRam} --admin-cpu ${jobParams.adminCpu} --master-count ${jobParams.masterCount} --master-ram ${jobParams.masterRam} --master-cpu ${jobParams.masterCpu} --worker-count ${jobParams.workerCount} --worker-ram ${jobParams.workerRam} --worker-cpu ${jobParams.workerCpu} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
             }
         }
@@ -28,7 +28,7 @@ def createEnvironment(Map jobParams) {
 
 def destroyEnvironment(Map jobParams) {
     dir("caasp-vmware") {
-        withEnv(["VC_USERNAME=${jobParams.credentials.vmware_username}", "VC_PASSWORD=${jobParams.credentials.vmware_password}")]) {
+        withEnv(["VC_USERNAME=${jobParams.credentials.vmware_username}", "VC_PASSWORD=${jobParams.credentials.vmware_password}"]) {
             sh(script: "set -o pipefail; export VC_HOST=${jobParams.platformEndpoint}; python3 ./caasp-vmware.py destroy --var-file ${jobParams.varfile} --stack-name ${jobParams.stackName} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
         }
     }
