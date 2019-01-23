@@ -5,8 +5,9 @@ ENV USER=jenkins
 ENV LEAP_VERSION=15.0
 
 # zypper
-RUN zypper ref && \
-    zypper -n in git curl iproute2 pssh sshpass jq tar unzip which gawk ruby \
+RUN zypper ar https://download.opensuse.org/repositories/Cloud:/OpenStack:/Master/openSUSE_Leap_${LEAP_VERSION}/Cloud:OpenStack:Master.repo && \
+    zypper --gpg-auto-import-keys ref && \
+    zypper -n in git curl iproute2 pssh sshpass jq tar unzip which genisoimage gawk ruby \
         python3 python3-pip python3-openstackclient python3-pyaml python3-requests && \
     zypper -n install -t pattern devel_basis && \
     zypper clean -a
