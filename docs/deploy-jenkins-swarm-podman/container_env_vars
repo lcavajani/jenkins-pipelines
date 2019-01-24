@@ -1,0 +1,8 @@
+NAME=qa-caasp-podman-prod0
+LABELS=qa-caasp
+MODE=exclusive
+EXECUTORS=10
+
+MASTER=https://ci.suse.de/ 
+USERNAME=qa-caasp
+PASSWORD=

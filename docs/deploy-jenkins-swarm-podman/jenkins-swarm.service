@@ -1,0 +1,27 @@
+[Unit]
+Description=Jenkins Swarm Podman Container
+After=network.target
+
+[Service]
+Type=simple
+TimeoutStartSec=5m
+Restart=always
+RestartSec=30
+
+EnvironmentFile=/etc/jenkins-swarm/config
+
+ExecStartPre=-/usr/bin/podman stop $CONTAINER_NAME
+ExecStart=/usr/bin/podman run --name $CONTAINER_NAME \
+          --env-file $ENV_VAR_FILE \
+          --mount "type=bind,src=${JENKINS_DATA_PATH},target=/var/jenkins_home" \
+          --mount "type=bind,ro=true,src=${SECRETS_DIR_PATH},target=/var/jenkins_home/secrets" \
+          --mount "type=bind,ro=true,src=${SECRETS_DIR_PATH}/jenkins_ssh_privkey,target=/var/jenkins_home/.ssh/id_rsa" \
+          jenkins-swarm/default
+
+ExecReload=-/usr/bin/podman stop $CONTAINER_NAME
+ExecReload=-/usr/bin/podman rm $CONTAINER_NAME
+ExecStop=-/usr/bin/podman stop $CONTAINER_NAME
+ExecStopPost=-/usr/bin/podman rm $CONTAINER_NAME
+
+[Install]
+WantedBy=multi-user.target

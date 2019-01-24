@@ -1,0 +1,4 @@
+CONTAINER_NAME=jenkins-swarm-prod
+JENKINS_DATA_PATH=/data/jenkins
+SECRETS_DIR_PATH=/etc/jenkins-swarm/secrets
+ENV_VAR_FILE=/etc/jenkins-swarm/container_env_vars
