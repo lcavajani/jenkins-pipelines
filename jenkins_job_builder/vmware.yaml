@@ -1,6 +1,6 @@
 # VMware
 - project:
-    name: vmware-push-image
+    name: vmware-platform
     PLATFORM: vmware
 
     jobs:
