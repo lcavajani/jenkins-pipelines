@@ -27,8 +27,8 @@ jobs:
   hyperv:
     - name: "qa-caasp-hyperv-push-image"
 
-  #openstack:
-  #  - name: "openstack-push-image"
+  openstack:
+    - name: "qa-caasp-openstack-push-image"
   
   #kvm:
   #  - name: "kvm-push-image"

@@ -24,6 +24,7 @@ parameters:
   image_url: False
 
 jobs:
+  # Hyper-V jobs
   hyperv:
     - name: "qa-caasp-hyperv-1m2w-conformance"
       parameters:
@@ -35,6 +36,7 @@ jobs:
         MASTER_COUNT: 3
         WORKER_COUNT: 2
 
+  # VMware jobs
   vmware:
     - name: "qa-caasp-vmware-1m2w-conformance"
       parameters:
@@ -42,6 +44,18 @@ jobs:
         WORKER_COUNT: 2
 
     - name: "qa-caasp-vmware-3m2w-conformance"
+      parameters:
+        MASTER_COUNT: 3
+        WORKER_COUNT: 2
+
+  # OpenStack jobs
+  openstack:
+    - name: "qa-caasp-openstack-1m2w-conformance"
+      parameters:
+        MASTER_COUNT: 1
+        WORKER_COUNT: 2
+
+    - name: "qa-caasp-openstack-3m2w-conformance"
       parameters:
         MASTER_COUNT: 3
         WORKER_COUNT: 2
