@@ -1,7 +1,6 @@
 node('qa-caasp') {
     checkout scm
 
-
     def common = load('./Jenkinsfiles/methods/common.groovy')
 
     def PLATFORM = params.get('PLATFORM')
