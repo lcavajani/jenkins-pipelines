@@ -35,9 +35,7 @@ node('qa-caasp') {
         if (!jobParametersMap.imageSourceUrl) {
             echo 'No image source URL provided, skipping task...'
         } else {
-            echo jobParametersMap.image
-            echo jobParametersMap.imageSourceUrl
-            //platform.pushImage(jobParametersMap)
+            platform.pushImage(jobParametersMap)
         }
     }
 
