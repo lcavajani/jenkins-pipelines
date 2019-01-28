@@ -5,7 +5,7 @@ hyperv:
 openstack:
   platform_endpoint: "https://engcloud.prv.suse.net:5000/v3"
   credentials_id: "ecp-openrc"
-  internal_net: "lcavajani-net"
+  internal_net: "qa-caasp-net"
   external_net: "floating"
 
 vmware:
