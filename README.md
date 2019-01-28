@@ -32,6 +32,7 @@ Main pipeline steps:
 ├── containers
 │   ├── jenkins-server
 │   └── jenkins-slaves
+├── docs
 ├── Jenkinsfiles
 │   └── methods
 │       ├── common
@@ -45,6 +46,8 @@ Main pipeline steps:
 ```
 
 **containers**: Everything related to containers.
+
+**docs**: Everything related to documentation.
 
 **Jenkinsfiles**: Jenkinsfiles definitions and the methods
 used in CI (common, platform...).

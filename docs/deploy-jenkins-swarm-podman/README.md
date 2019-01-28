@@ -1,10 +1,15 @@
 # Deploy Jenkins Swarm with Podman
 
-1. Create the configuration directory `/etc/jenkins-swarm`
+1. Install requirements
 
-2. Create configuration file `/etc/jenkins-swarm/config`
+```console
+zypper ar https://download.opensuse.org/repositories/devel:/CaaSP:/Head:/ControllerNode/openSUSE_Leap_15.0/devel:CaaSP:Head:ControllerNode.repo
+zypper in podman git make
+```
 
-An example can be found [here](./config).
+2. Create the configuration directory `/etc/jenkins-swarm`
+
+3. Create configuration file [/etc/jenkins-swarm/config](./config).
 
 ```
 CONTAINER_NAME=jenkins-swarm-prod
@@ -41,6 +46,7 @@ secrets/
 ├── jenkins_api_password
 ├── jenkins_api_username
 ├── jenkins_ssh_privkey
+├── openstack_rc
 ├── vmware_password
 └── vmware_username
 ```
@@ -52,12 +58,9 @@ plugin to connect to the master (ci.suse.de).
 An example can be found [here](./container_env_vars).
 
 
-3. Configure Systemd
+4. Configure Systemd
 
-Create unit file `/etc/systemd/system/jenkins-swarm.service`
-
-An example can be found [here](./jenkins-swarm.service).
-
+Create unit file [/etc/systemd/system/jenkins-swarm.service](./jenkins-swarm.service).
 
 Enable and start the service
 

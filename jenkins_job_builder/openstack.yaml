@@ -1,0 +1,12 @@
+# Hyper-V
+- project:
+    name: openstack-platform
+    PLATFORM: openstack
+
+    jobs:
+      - 'qa-caasp-{PLATFORM}-push-image':
+            JOB_CI_FILE: auto-push-image_trigger-jobs.yaml
+      - 'qa-caasp-{PLATFORM}-{setup}-conformance':
+            setup: 1m2w
+      - 'qa-caasp-{PLATFORM}-{setup}-conformance':
+            setup: 3m2w
