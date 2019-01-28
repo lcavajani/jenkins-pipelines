@@ -12,7 +12,7 @@
     parameters:
       - string:
           name: IMAGES_REPO
-          default: http://download.suse.de/ibs/Devel:/CASP:/Head:/ControllerNode/images-sle15/
+          default: http://ibs-mirror.prv.suse.net/ibs/Devel:/CASP:/Head:/ControllerNode/images-sle15/
           description: >-
             URL of the image download repository
 
