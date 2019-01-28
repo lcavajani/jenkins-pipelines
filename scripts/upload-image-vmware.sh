@@ -4,12 +4,13 @@ set -euo pipefail
 
 VAR_FILE=$1
 IMAGE_URL=$2
+SCRIPT_PATH=${3:-./caasp-vmware.py}
 
 IMAGE_NAME="$(basename "$IMAGE_URL")"
 IMAGE_PATH="$(pwd)/$(basename "$IMAGE_URL")"
 
 caasp_vmware() {
-  python3 ./caasp-vmware.py --var-file "$VAR_FILE" "$@"
+  python3 "$SCRIPT_PATH" --var-file "$VAR_FILE" "$@"
 }
 
 echo "INFO: Checking if we already have this image remotely: $IMAGE_NAME"

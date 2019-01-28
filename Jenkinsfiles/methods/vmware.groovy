@@ -2,7 +2,7 @@ def pushImage(Map jobParams) {
     dir("scripts") {
         timeout(120) {
             withEnv(["VC_USERNAME=${jobParams.credentials.vmware_username}", "VC_PASSWORD=${jobParams.credentials.vmware_password}"]) {
-                sh(script: "./upload-image-vmware.sh ${jobParams.varfile} ${jobParams.imageSourceUrl} 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
+                sh(script: "set -o pipefail; export VC_HOST=${jobParams.platformEndpoint}; ./upload-image-vmware.sh ${jobParams.varfile} ${jobParams.imageSourceUrl} ${WORKSPACE}/caasp-vmware/caasp-vmware.py 2>&1 | tee ${WORKSPACE}/logs/caasp-vmware.log")
             }
         }
     }

@@ -29,8 +29,8 @@ if ! openstack ${INSECURE:+--insecure} image list --private | grep -q "$IMAGE_NA
     fi
 
     echo "INFO: Uploading image: $IMAGE_NAME"
-    openstack --insecure image create "$IMAGE_NAME" --private
-        --disk-format qcow2 --container-format bare
+    openstack --insecure image create "$IMAGE_NAME" --private \
+        --disk-format qcow2 --container-format bare \
         --min-disk 40 --file "$IMAGE_PATH" \
         --property caasp-version="$IMAGE_VERSION" \
         --property caasp-build="$IMAGE_BUILD"

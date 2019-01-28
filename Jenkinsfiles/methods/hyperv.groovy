@@ -1,7 +1,7 @@
 def pushImage(Map jobParams) {
     timeout(120) {
         withEnv(["SSHUSER=${jobParams.credentials.hyperv_username}", "SSHPASS=${jobParams.credentials.hyperv_password}"]) {
-            sh(script: "set -o pipefail; sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \"${SSHUSER}\"@${jobParams.platformEndpoint} 'Get-ChildItem Env:;git checkout ${BRANCH_NAME}; git pull; caasp-hyperv.ps1 fetchimage -caaspImageSourceUrl ${jobParams.imageSourceUrl} -nochecksum' 2>&1 | tee ${WORKSPACE}/logs/caasp-hyperv.log")
+            sh(script: "set -o pipefail; sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \"${SSHUSER}\"@${jobParams.platformEndpoint} 'Get-ChildItem Env:;git checkout ${jobParams.branchName}; git pull; caasp-hyperv.ps1 fetchimage -caaspImageSourceUrl ${jobParams.imageSourceUrl}' 2>&1 | tee ${WORKSPACE}/logs/caasp-hyperv.log")
         }
     }
 }
