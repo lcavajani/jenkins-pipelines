@@ -2,14 +2,6 @@ def call(PLATFORM, Map params, Map defaultParams) {
     def p = params
     def dp = defaultParams
 
-    //def get_val = { String param_val, String default_val -> 
-    //        if (param_val == "") {
-    //            return param_val
-    //        } else {
-    //            return default_val
-    //        }
-    //    }
-
     def parametersMap = [
         platform: PLATFORM,
         platformEndpoint: (p.get('PLATFORM_ENDPOINT') == '') ? dp.get(PLATFORM).platform_endpoint : p.get('PLATFORM_ENDPOINT'),
@@ -44,11 +36,11 @@ def call(PLATFORM, Map params, Map defaultParams) {
                 masterFlavor: (p.get('MASTER_FLAVOR') == '') ? dp.default.master_flavor : p.get('MASTER_FLAVOR'),
                 workerFlavor: (p.get('WORKER_FLAVOR') == '') ? dp.default.worker_flavor : p.get('WORKER_FLAVOR')
             ]
-            parametersMap.internal_net = dp.openstack.internal_net
-            parametersMap.external_net = dp.openstack.external_net
+            parametersMap.internalNet = dp.openstack.internal_net
+            parametersMap.externalNet = dp.openstack.external_net
             break
         case "vmware":
-            parametersMap.varfile = "${WORKSPACE}/jobs_parameter_files/${dp.vmware.varfile}"
+            parametersMap.varFile = "${WORKSPACE}/jobs_parameter_files/${dp.vmware.varfile}"
             break
     }
 
