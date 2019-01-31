@@ -41,6 +41,7 @@ This file must contain the following secrets:
 
 ```
 secrets/
+├── caasp_regcode
 ├── hyperv_password
 ├── hyperv_username
 ├── jenkins_api_password

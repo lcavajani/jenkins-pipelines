@@ -5,6 +5,9 @@
     sandbox: true
     node: 'qa-caasp'
 
+    triggers:
+      - timed: 'H 04 * * *'
+
     build-discarder:
       numToKeep: -1
       daysToKeep: 30

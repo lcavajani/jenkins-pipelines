@@ -1,23 +1,18 @@
 hyperv:
   platform_endpoint: "10.84.149.23"
-  credentials_id: "hvcore-ssh"
 
 openstack:
   platform_endpoint: "https://engcloud.prv.suse.net:5000/v3"
-  credentials_id: "ecp-openrc"
   internal_net: "qa-caasp-network"
   external_net: "floating"
 
 vmware:
   platform_endpoint: "jazz.qa.prv.suse.net"
-  credentials_id: "vcenter-api"
   varfile: "caasp-vmware.yaml"
 
 jenkins:
-  credentials_id: "jenkins-api"
 
 git:
-  credentials_id: "jenkins-ssh"
 
 default:
   admin_ram: "8192"

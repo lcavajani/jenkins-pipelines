@@ -2,6 +2,7 @@ def call() {
     def dir = '/var/jenkins_home/secrets/'
 
     def credentials = [
+        caasp_regcode: readFile(dir + 'caasp_regcode').trim(),
         hyperv_password: readFile(dir + 'hyperv_password').trim(),
         hyperv_username: readFile(dir + 'hyperv_username').trim(),
         jenkins_api_password: readFile(dir + 'jenkins_api_password').trim(),

@@ -5,5 +5,4 @@
       - git:
          url: https://github.com/lcavajani/jenkins-pipelines
          branches:
-          - origin/dev
-#          - origin/master
+          - origin/master

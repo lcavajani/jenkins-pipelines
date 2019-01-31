@@ -26,13 +26,9 @@ node('qa-caasp') {
         }
 
         stage('clone caasp-build repos') {
-            sh(script: "mkdir -p ${WORKSPACE}/caasp-builds")
-
-            dir("caasp-builds") {
-                checkout([$class: 'GitSCM', branches: [[name: "*/master"]],
-                userRemoteConfigs: [[url: jobParametersMap.resultsGitRepo]],
-                extensions: [[$class: 'CleanCheckout']]])
-            }
+            sh(script: "git config --global user.email 'jenkinsci@caasp.suse'")
+            sh(script: "git config --global user.name 'Jenkins CI'")
+            sh(script: "git clone ${jobParametersMap.resultsGitRepo} ${defaultJobParametersMap.available_builds.results_dir}")
         }
     }
 
@@ -44,10 +40,16 @@ node('qa-caasp') {
         common.triggerJenkinsJobs(jobParametersMap, defaultJobParametersMap)
     }
 
-    //stage('push results to GitLab') {
-    //        sh(script: "git add & commit")
-    //    }
-    //}
+    stage('push results to git') {
+        dir("${defaultJobParametersMap.available_builds.results_dir}") {
+            sh(script: "ls -la")
+            sh(script: "git add ./*CaaSP-Stack*.sha256")
+            sh(script: "git add ${defaultJobParametersMap.available_builds.results_file}")
+            sh(script: "git commit -m \$(date +'%Y%m%d-%H%M%S')")
+            sh(script: "git status")
+            sh(script: "git push -u origin master")
+        }
+    }
 
     stage('Workspace cleanup') {
         if (jobParametersMap.workspaceCleanup) {

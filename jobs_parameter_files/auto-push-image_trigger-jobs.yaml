@@ -31,10 +31,10 @@ jobs:
         MASTER_COUNT: 1
         WORKER_COUNT: 2
 
-    - name: "qa-caasp-hyperv-3m2w-conformance"
-      parameters:
-        MASTER_COUNT: 3
-        WORKER_COUNT: 2
+    #- name: "qa-caasp-hyperv-3m2w-conformance"
+    #  parameters:
+    #    MASTER_COUNT: 3
+    #    WORKER_COUNT: 2
 
   # VMware jobs
   vmware:
@@ -43,10 +43,10 @@ jobs:
         MASTER_COUNT: 1
         WORKER_COUNT: 2
 
-    - name: "qa-caasp-vmware-3m2w-conformance"
-      parameters:
-        MASTER_COUNT: 3
-        WORKER_COUNT: 2
+    #- name: "qa-caasp-vmware-3m2w-conformance"
+    #  parameters:
+    #    MASTER_COUNT: 3
+    #    WORKER_COUNT: 2
 
   # OpenStack jobs
   openstack:
@@ -55,7 +55,7 @@ jobs:
         MASTER_COUNT: 1
         WORKER_COUNT: 2
 
-    - name: "qa-caasp-openstack-3m2w-conformance"
-      parameters:
-        MASTER_COUNT: 3
-        WORKER_COUNT: 2
+    #- name: "qa-caasp-openstack-3m2w-conformance"
+    #  parameters:
+    #    MASTER_COUNT: 3
+    #    WORKER_COUNT: 2
