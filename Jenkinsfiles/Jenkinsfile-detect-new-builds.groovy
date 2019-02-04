@@ -2,11 +2,12 @@ node('qa-caasp') {
     checkout scm
 
     def jobParametersMap = [
+        dryRun: params.get('DRY_RUN'),
         imagesRepo: params.get('IMAGES_REPO'),
         resultsGitRepo: params.get('RESULTS_REPO'),
         jobsCiFile: params.get('JOB_CI_FILE'),
+        job: "${JOB_NAME}-${BUILD_NUMBER}".replace('/', '-'),
         triggerJobMode: params.get('MODE'),
-        triggerJobDryRun: params.get('DRY_RUN'),
         workspaceCleanup: params.get('WORKSPACE_CLEANUP'),
     ]
 
@@ -45,9 +46,13 @@ node('qa-caasp') {
             sh(script: "ls -la")
             sh(script: "git add ./*CaaSP-Stack*.sha256")
             sh(script: "git add ${defaultJobParametersMap.available_builds.results_file}")
-            sh(script: "git commit -m \$(date +'%Y%m%d-%H%M%S')")
+            sh(script: "git commit -m \"\$(date +'%Y%m%d-%H%M%S') ${jobParametersMap.job}\" -m \"Files: \$(git ls-files -m -o ./*CaaSP-Stack*.sha256)\"")
+            sh(script: "git --no-pager log -1")
             sh(script: "git status")
-            sh(script: "git push -u origin master")
+
+            if (!jobParametersMap.dryRun) {
+                sh(script: "git push -u origin master")
+            }
         }
     }
 

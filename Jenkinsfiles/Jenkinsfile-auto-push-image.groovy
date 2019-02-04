@@ -12,9 +12,9 @@ node('qa-caasp') {
     def jobParametersMap = common.readJobParameters(PLATFORM, params, defaultJobParametersMap)
 
     jobParametersMap << [
-        jobsCiFile: params.get('JOB_CI_FILE'),
-        triggerJobDryRun: params.get('DRY_RUN'),
-        credentials: credentials
+        dryMode: params.get('DRY_RUN'),
+        credentials: credentials,
+        jobsCiFile: params.get('JOB_CI_FILE')
     ]
 
     stage('preparation') {
